@@ -1,0 +1,231 @@
+<Manager>:
+    DummyScreen:
+    ConScreen:
+        name: 'connect'
+    TopicScreen:
+        name: 'topics'
+
+<ConScreen>:
+
+    FloatLayout:
+        MDIcon:
+            icon: 'video-input-antenna'
+            color: '#673AB7'
+            adaptive_size: True
+            pos_hint: {"center_x": .5, "center_y": .8}
+            allow_selection: True
+            font_size: '80sp' 
+        MDTextField:
+            hint_text: "Broker"
+            pos_hint: {'center_x': .5,'center_y': .6}
+            size_hint_x: .6
+            id: mqtt
+        MDTextField:
+            hint_text: "Porta"
+            pos_hint: {'center_x': .5,'center_y': .5}
+            size_hint_x: .6
+            id: porta
+        MDTextField:
+            hint_text: "ID"
+            pos_hint: {'center_x': .5,'center_y': .4}
+            size_hint_x: .6
+            id: cli
+        MDLabel:
+            text: ''
+            pos_hint: {'center_x': .5,'center_y': .3}
+            id: msg
+            font_style: 'Caption'
+            halign: "center"
+            theme_text_color: 'Custom'
+            text_color: 1, 0, 0, 1
+        MDFillRoundFlatButton:
+            text: "Conectar"
+            pos_hint: {'center_x': .5,'center_y': .2}
+            size_hint_x: .4
+            padding_vertical: "8dp"
+            on_release: root.connect_broker()
+
+<TopicScreen>:
+    MDFloatLayout:
+        orientation: "vertical"
+
+        MDToolbar:
+            title: "Topics"
+            left_action_items: [["arrow-left", lambda x: root.back_start()]]
+            right_action_items: [["plus", lambda x: app.root.get_screen('topics').open_card()], ["cog-outline", lambda x: x]]
+            pos_hint: {'top': 1}
+
+        MDBoxLayout:
+            
+            orientation: 'vertical'
+            adaptive_height:True
+            spacing: '20dp'
+            padding: '20dp'
+            MDLabel:
+                text: "Subscribe"
+                font_style:"Subtitle2"
+            ScrollView:
+                size_hint_y:None
+                height:'200dp'
+                bar_width:0
+                padding: '20dp'
+                MDBoxLayout:
+                    id: scroll_subs
+                    adaptative_width: True 
+                    spacing: '15dp'
+                    padding: '20dp'
+                    
+            MDLabel:
+                text: "Publish"
+                font_style:"Subtitle2"
+            ScrollView:
+                size_hint_y:None
+                height:'200dp'
+                bar_width:0
+                padding: '20dp'
+
+                MDBoxLayout:
+                    id: scroll_pubs
+                    padding: '20dp'
+                    adaptative_width: True 
+                    spacing: '15dp'
+                    Topic:
+                        text_name: 'LED'
+                        text_sensor: ''
+
+<TopCard>:
+    orientation: 'vertical'
+    size_hint: .6, .6
+    pos_hint: {'center_x': .5,'center_y': .5}
+    radius: dp(20)
+
+    MDBoxLayout:
+        size_hint_y: .2
+        md_bg_color: app.theme_cls.primary_color
+        MDLabel:
+            text: "Add Topic"
+            halign: 'center'
+            font_style: 'H6'
+            theme_text_color: 'Custom'
+            text_color: 1, 1, 1, 1
+        MDIconButton:
+            icon: 'close'
+            theme_text_color: 'Custom'
+            text_color: 1, 1, 1, 1
+            pos_hint: {'center_x': .9,'center_y': .5}
+            on_release: root.close_card()
+
+    MDFloatLayout:        
+        MDTextField:
+            hint_text: "Topic"
+            size_hint_x: .8
+            pos_hint: {'center_x': .5,'center_y': .8}
+            id: topic
+        MDTextField:
+            hint_text: "Name"
+            size_hint_x: .8
+            pos_hint: {'center_x': .5,'center_y': .6}
+            id: name
+        MDBoxLayout:
+            pos_hint: {'center_x': 0.5,'center_y': .4}
+            size_hint: .85, .2
+            MDCheckbox:
+                size_hint: None, None
+                size: "40dp", "40dp"
+                pos_hint: {'center_x': .5, 'center_y': .5}
+            MDLabel:
+                text: "Publish"      
+                font_style: 'Subtitle2' 
+        MDLabel:
+            text: ""
+            pos_hint: {'center_x': .5,'center_y': .3}
+            theme_text_color: 'Custom'
+            text_color: 1, 0, 0, 1
+            halign: 'center'
+            id: msg_error        
+            font_style: 'Caption'       
+
+        MDRoundFlatButton:
+            text: "Confirm"
+            size_hint_x: .6
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+            padding_vertical: "8dp"
+            pos_hint: {'center_x': .5,'center_y': .15}
+            on_release: root.add_card(name.text, topic.text)
+
+<Topic>:
+    orientation: 'vertical'
+    size_hint_y:None
+    size_hint_x:None
+    height:'160dp'
+    width:'180dp'
+    elevation: 8
+    text_name: ''
+    text_sensor: ''
+    identifier: ''
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint_y: .3
+        md_bg_color: app.theme_cls.primary_color
+        MDLabel:
+            text: root.text_name
+            halign: 'center'
+            font_style: 'Subtitle1'
+            bold: True
+            size_hint_y: .2
+            theme_text_color: 'Custom'
+            text_color: 1, 1, 1, 1
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDLabel:
+            text: root.text_sensor
+            halign: 'center'
+            font_style: 'H3'
+            size_hint: 1, .75
+        MDFloatLayout:
+            size_hint: .8, .25
+            pos_hint: {'center_x': .5,'center_y': .1}
+            MDIconButton:
+                icon: "chart-areaspline"
+                pos_hint: {'center_x': .3,'center_y': .8}
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                on_release: app.root.get_screen('topics').create_graph()
+            MDIconButton:
+                icon: "delete"
+                pos_hint: {'center_x': .7,'center_y': .8}
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                on_release: root.remove_topic()
+
+
+
+<Graphics>:
+    
+    orientation: 'vertical'
+    size_hint: .7, .7
+    pos_hint: {'center_x': .5,'center_y': .5}
+    radius: dp(20)    
+    elevation: 10
+    MDBoxLayout:
+        size_hint_y: .15
+        md_bg_color: app.theme_cls.primary_color
+        MDLabel:
+            text: "Histórico"
+            halign: 'center'
+            font_style: 'H6'
+            theme_text_color: 'Custom'
+            text_color: 1, 1, 1, 1
+        MDIconButton:
+            icon: 'close'
+            theme_text_color: 'Custom'
+            text_color: 1, 1, 1, 1
+            pos_hint: {'center_x': .9,'center_y': .5}
+            on_release: root.close_card()
+    
+    MDBoxLayout:  
+        id: graph
+        size_hint_y: .85  
+        padding: '20dp'
+        md_bg_color: app.theme_cls.primary_color
