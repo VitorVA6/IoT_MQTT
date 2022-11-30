@@ -23,8 +23,37 @@
 MQTTClient client;
 int lcd;
 
+void write_1line(char linha1[]);
+void write_2line(char linha1[], char linha2[]);
+
 void publish(MQTTClient client, char* topic, char* payload);
 int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message);
+
+int main(){
+    
+    wiringPiSetup();
+    lcd = lcdInit (2, 16, 4, RS, E, DB4, DB5, DB6, DB7, 0, 0, 0, 0);
+
+    write_2line("IoT - MQTT", "Sistemas Digitais")
+
+    int rc;
+    MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
+    conn_opts.username = USERNAME;
+    conn_opts.password = PASSWORD;
+
+    MQTTClient_create(&client, MQTT_ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
+    MQTTClient_setCallbacks(client, NULL, NULL, on_message, NULL);
+
+    rc = MQTTClient_connect(client, &conn_opts);
+
+    if (rc != MQTTCLIENT_SUCCESS){
+        printf("\n\rFalha na conexao ao broker MQTT. Erro: %d\n", rc);
+        exit(-1);}
+    MQTTClient_subscribe(client, MQTT_SUBSCRIBE_TOPIC, 0);
+
+    while(1){
+    }
+}
 
 void publish(MQTTClient client, char* topic, char* payload) {
     MQTTClient_message pubmsg = MQTTClient_message_initializer;
@@ -50,26 +79,16 @@ int on_message(void *context, char *topicName, int topicLen, MQTTClient_message 
     return 1;
 }
 
-int main(){
-    
-    wiringPiSetup();
-    lcd = lcdInit (2, 16, 4, RS, E, DB4, DB5, DB6, DB7, 0, 0, 0, 0);
+void write_1line(char linha1[]) {
+	lcdHome(lcd);
+	lcdPuts(lcd, linha1);
+	lcdPosition(lcd,0,1);
+	lcdPuts(lcd, "                ");
+}
 
-    int rc;
-    MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
-    conn_opts.username = USERNAME;
-    conn_opts.password = PASSWORD;
-
-    MQTTClient_create(&client, MQTT_ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
-    MQTTClient_setCallbacks(client, NULL, NULL, on_message, NULL);
-
-    rc = MQTTClient_connect(client, &conn_opts);
-
-    if (rc != MQTTCLIENT_SUCCESS){
-        printf("\n\rFalha na conexao ao broker MQTT. Erro: %d\n", rc);
-        exit(-1);}
-    MQTTClient_subscribe(client, MQTT_SUBSCRIBE_TOPIC, 0);
-
-    while(1){
-    }
+void write_2line(char linha1[], char linha2[]) {
+	lcdHome(lcd);
+	lcdPuts(lcd, linha1);
+	lcdPosition(lcd,0,1);
+	lcdPuts(lcd, linha2);
 }
