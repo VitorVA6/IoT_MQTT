@@ -5,23 +5,22 @@
 #include <string.h>
 #include <MQTTClient.h>
 
-#define RS 25
-#define E 1
-#define DB4 12
-#define DB5 16
-#define DB6 20
-#define DB7 21
+#define RS 13
+#define E 18
+#define DB4 21
+#define DB5 24
+#define DB6 26
+#define DB7 27
 
 #define MQTT_ADDRESS "tcp://10.0.0.101"
 #define USERNAME "aluno"
 #define PASSWORD "@luno*123"
 #define CLIENTID "MQTTCClientID"
-
-#define MQTT_PUBLISH_TOPIC "SBC/voltage"
-#define MQTT_SUBSCRIBE_TOPIC "LEDS/voltage"
+#define QOS 0
 
 MQTTClient client;
 int lcd;
+char voltage[4];
 
 void write_1line(char linha1[]);
 void write_2line(char linha1[], char linha2[]);
@@ -34,10 +33,12 @@ int main(){
     wiringPiSetup();
     lcd = lcdInit (2, 16, 4, RS, E, DB4, DB5, DB6, DB7, 0, 0, 0, 0);
 
-    write_2line("IoT - MQTT", "Sistemas Digitais")
+    write_2line("IoT_MQTT", "MI - SD");
 
     int rc;
     MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
+    conn_opts.keepAliveInterval = 60;
+	conn_opts.cleansession = 1;
     conn_opts.username = USERNAME;
     conn_opts.password = PASSWORD;
 
@@ -49,9 +50,13 @@ int main(){
     if (rc != MQTTCLIENT_SUCCESS){
         printf("\n\rFalha na conexao ao broker MQTT. Erro: %d\n", rc);
         exit(-1);}
-    MQTTClient_subscribe(client, MQTT_SUBSCRIBE_TOPIC, 0);
+    MQTTClient_subscribe(client, "LEDS/voltage", 2);
+    MQTTClient_subscribe(client, "LEDS/D0", 2);
+    MQTTClient_subscribe(client, "LEDS/D1", 2);
 
+    
     while(1){
+        
     }
 }
 
@@ -60,7 +65,7 @@ void publish(MQTTClient client, char* topic, char* payload) {
 
     pubmsg.payload = payload;
     pubmsg.payloadlen = strlen(pubmsg.payload);
-    pubmsg.qos = 2;
+    pubmsg.qos = QOS;
     pubmsg.retained = 0;
     MQTTClient_deliveryToken token;
     MQTTClient_publishMessage(client, topic, &pubmsg, &token);
@@ -70,9 +75,17 @@ void publish(MQTTClient client, char* topic, char* payload) {
 int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
     char* payload = message->payload;
 
-    printf("Mensagem recebida! \n\rTopico: %s Mensagem: %s\n", topicName, payload);
+    printf("Topico: %s Mensagem: %s\n", topicName, payload);
 
-    publish(client, MQTT_PUBLISH_TOPIC, payload);
+    if(strcmp(topicName, "LEDS/voltage") == 0){
+        publish(client, "SBC/voltage", payload);
+    }
+    else if(strcmp(topicName, "LEDS/D0") == 0){
+        publish(client, "SBC/D0", payload);
+    }
+    else if(strcmp(topicName, "LEDS/D1") == 0){
+        publish(client, "SBC/D1", payload);
+    }
 
     MQTTClient_freeMessage(&message);
     MQTTClient_free(topicName);

@@ -4,14 +4,16 @@ import time
 
 broker = 'broker.emqx.io'
 port = 1883
-client = mqtt.Client("emissor")
+
+client = mqtt.Client("sersor2")
+
 client.connect(broker, port)
 
-topic = "VOLUME"
+topic = "SBC/voltage"
 
 while True:
-    rand_number = uniform(0, 1)
-    msg = topic + '-' + str(rand_number)[0:4]
+    rand_number = uniform(2, 3.3)
+    msg = str(rand_number)[0:4]
     client.publish(topic, msg)
     print(str(rand_number)[0:4])
-    time.sleep(1)
+    time.sleep(4)

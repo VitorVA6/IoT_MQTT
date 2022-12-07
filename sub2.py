@@ -1,14 +1,10 @@
 import paho.mqtt.client as mqtt 
 import time 
 
-broker = '10.0.0.101'
-username = 'aluno'
-password = '@luno*123'
+broker = 'broker.emqx.io'
 port = 1883
 
-client = mqtt.Client("Sub")
-
-client.username_pw_set(username, password)
+client = mqtt.Client("Sub2")
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -18,15 +14,15 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, message):
-    print(str(message.payload.decode("utf-8")))
+    print(message.topic +" "+ str(message.payload.decode("utf-8")))
 
 client.on_connect = on_connect
 client.connect(broker, port)
 
-client.subscribe("SBC/#")
+client.subscribe("LEDS/#")
 client.on_message = on_message
 
 client.loop_start()
 
-time.sleep(30)
+time.sleep(100)
 client.loop_stop()

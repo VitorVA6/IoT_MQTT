@@ -91,7 +91,20 @@ void reconnect_MQTT(){
 
 void publishTopic(){
   delay(5000);
-  client.publish(topicVoltage, "3.2");
+  float valor = analogRead(A0)*(3.3/1023.0);
+  char valorConv[4];
+  sprintf(valorConv, "%.2f", valor);
+  client.publish(topicVoltage, valorConv);
+  
+  int d0Value = digitalRead(D0);
+  char d0valueConv[1];
+  sprintf(d0valueConv, "%d", d0Value);
+  client.publish("LEDS/D0", d0valueConv);
+
+  int d1Value = digitalRead(D1);
+  char d1valueConv[1];
+  sprintf(d1valueConv, "%d", d1Value);
+  client.publish("LEDS/D1", d1valueConv);
 }
 
 void setup() {

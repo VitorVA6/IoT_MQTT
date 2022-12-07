@@ -17,32 +17,44 @@
             font_size: '80sp' 
         MDTextField:
             hint_text: "Broker"
-            pos_hint: {'center_x': .5,'center_y': .6}
+            pos_hint: {'center_x': .5,'center_y': .65}
             size_hint_x: .6
             id: mqtt
         MDTextField:
             hint_text: "Porta"
-            pos_hint: {'center_x': .5,'center_y': .5}
+            pos_hint: {'center_x': .5,'center_y': .55}
             size_hint_x: .6
             id: porta
         MDTextField:
+            hint_text: "Usuário"
+            pos_hint: {'center_x': .5,'center_y': .45}
+            size_hint_x: .6
+            id: user
+        MDTextField:
+            hint_text: "Senha"
+            pos_hint: {'center_x': .5,'center_y': .35}
+            size_hint_x: .6
+            id: password
+        MDTextField:
             hint_text: "ID"
-            pos_hint: {'center_x': .5,'center_y': .4}
+            pos_hint: {'center_x': .5,'center_y': .25}
             size_hint_x: .6
             id: cli
         MDLabel:
             text: ''
-            pos_hint: {'center_x': .5,'center_y': .3}
+            pos_hint: {'center_x': .5,'center_y': .2}
             id: msg
             font_style: 'Caption'
             halign: "center"
             theme_text_color: 'Custom'
             text_color: 1, 0, 0, 1
-        MDFillRoundFlatButton:
-            text: "Conectar"
-            pos_hint: {'center_x': .5,'center_y': .2}
+        MDRoundFlatButton:
+            text: "Connect"
+            pos_hint: {'center_x': .5,'center_y': .1}
             size_hint_x: .4
-            padding_vertical: "8dp"
+            padding_vertical: "8dp"     
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'      
             on_release: root.connect_broker()
 
 <TopicScreen>:
@@ -50,48 +62,36 @@
         orientation: "vertical"
 
         MDToolbar:
-            title: "Topics"
+            title: "Dashboard"
             left_action_items: [["arrow-left", lambda x: root.back_start()]]
-            right_action_items: [["plus", lambda x: app.root.get_screen('topics').open_card()], ["cog-outline", lambda x: x]]
+            right_action_items: [["cog-outline", lambda x: x]]
             pos_hint: {'top': 1}
+            md_bg_color: rgba(18, 18, 18, 1)
 
-        MDBoxLayout:
+        MDFloatLayout:
             
-            orientation: 'vertical'
-            adaptive_height:True
-            spacing: '20dp'
-            padding: '20dp'
-            MDLabel:
-                text: "Subscribe"
-                font_style:"Subtitle2"
-            ScrollView:
-                size_hint_y:None
-                height:'200dp'
-                bar_width:0
-                padding: '20dp'
-                MDBoxLayout:
-                    id: scroll_subs
-                    adaptative_width: True 
-                    spacing: '15dp'
-                    padding: '20dp'
-                    
-            MDLabel:
-                text: "Publish"
-                font_style:"Subtitle2"
-            ScrollView:
-                size_hint_y:None
-                height:'200dp'
-                bar_width:0
-                padding: '20dp'
-
-                MDBoxLayout:
-                    id: scroll_pubs
-                    padding: '20dp'
-                    adaptative_width: True 
-                    spacing: '15dp'
-                    Topic:
-                        text_name: 'LED'
-                        text_sensor: ''
+            Topic:
+                id: sensor_an
+                text_name: 'SENSOR_A0'
+                text_sensor: '0.00'
+                text_unidade: 'Volts'
+                icon_name: 'flash'
+                pos_hint: {'center_x': 0.2,'center_y': 0.6}
+            Topic:
+                id: sensor_d0
+                text_name: 'SENSOR_D0'
+                text_sensor: 'HIGH'
+                text_unidade: 'Level'
+                icon_name: 'square-wave'
+                pos_hint: {'center_x': 0.5,'center_y': 0.6}
+            Topic:
+                id: sensor_d1
+                text_name: 'SENSOR_D1'
+                text_sensor: 'HIGH'
+                icon_name: 'square-wave'
+                pos_hint: {'center_x': 0.8,'center_y': 0.6}
+                text_unidade: 'Level'
+        
 
 <TopCard>:
     orientation: 'vertical'
@@ -158,55 +158,70 @@
     orientation: 'vertical'
     size_hint_y:None
     size_hint_x:None
-    height:'160dp'
-    width:'180dp'
-    elevation: 8
+    height:'280dp'
+    width:'250dp'
+    text_unidade: ''
     text_name: ''
     text_sensor: ''
-    identifier: ''
+    icon_name: ''
     MDBoxLayout:
         orientation: 'vertical'
-        size_hint_y: .3
-        md_bg_color: app.theme_cls.primary_color
+        size_hint_y: .2
         MDLabel:
             text: root.text_name
             halign: 'center'
             font_style: 'Subtitle1'
-            bold: True
             size_hint_y: .2
             theme_text_color: 'Custom'
-            text_color: 1, 1, 1, 1
-    MDBoxLayout:
-        orientation: 'vertical'
+            text_color: '#673AB7'
+    MDFloatLayout:
+
+        MDIcon:
+            icon: root.icon_name
+            color: '#673AB7'
+            adaptive_size: True
+            pos_hint: {"center_x": .5, "center_y": .9}
+            allow_selection: True
+            font_size: '50sp' 
+
         MDLabel:
             text: root.text_sensor
             halign: 'center'
-            font_style: 'H3'
-            size_hint: 1, .75
-        MDFloatLayout:
-            size_hint: .8, .25
-            pos_hint: {'center_x': .5,'center_y': .1}
-            MDIconButton:
-                icon: "chart-areaspline"
-                pos_hint: {'center_x': .3,'center_y': .8}
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                on_release: app.root.get_screen('topics').create_graph()
-            MDIconButton:
-                icon: "delete"
-                pos_hint: {'center_x': .7,'center_y': .8}
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                on_release: root.remove_topic()
+            font_style: 'H2'
+            theme_text_color: "Custom"
+            text_color: '#673AB7'
+            pos_hint: {'center_x': .5,'center_y': .6}
+        
+        MDLabel:
+            text: root.text_unidade
+            halign: 'center'
+            font_style: 'Subtitle2'
+            theme_text_color: "Custom"
+            text_color: '#673AB7'
+            pos_hint: {'center_x': .5,'center_y': .45}
 
-
+        MDLabel:
+            text: 'Last update in 22:40:20'
+            halign: 'center'
+            font_style: 'Caption'
+            theme_text_color: "Custom"
+            text_color: '#673AB7'
+            pos_hint: {'center_x': .5,'center_y': .35}
+        
+        MDRoundFlatButton:
+            text: "Graphics"
+            size_hint_x: .8
+            pos_hint: {'center_x': .5,'center_y': .15}
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+            padding_vertical: "2dp"
+            on_release: app.root.get_screen('topics').create_graph()
 
 <Graphics>:
     
     orientation: 'vertical'
     size_hint: .7, .7
-    pos_hint: {'center_x': .5,'center_y': .5}
-    radius: dp(20)    
+    pos_hint: {'center_x': .5,'center_y': .5}  
     elevation: 10
     MDBoxLayout:
         size_hint_y: .15
@@ -228,4 +243,3 @@
         id: graph
         size_hint_y: .85  
         padding: '20dp'
-        md_bg_color: app.theme_cls.primary_color
