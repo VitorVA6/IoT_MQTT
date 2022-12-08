@@ -20,7 +20,10 @@
 
 MQTTClient client;
 int lcd;
-char voltage[4];
+char voltage[10];
+char d0[10];
+char d1[10];
+int flag = 0;
 
 void write_1line(char linha1[]);
 void write_2line(char linha1[], char linha2[]);
@@ -56,7 +59,13 @@ int main(){
 
     
     while(1){
-        
+        if(flag == 1){
+            lcdClear(lcd);
+            lcdPuts(lcd, "Intervalo: 05s");
+            lcdPosition(lcd,0,1);
+            lcdPrintf(lcd, "A0-%s D0-%s D1-%s", voltage, d0, d1);
+            flag = 0;
+        }
     }
 }
 
@@ -75,16 +84,18 @@ void publish(MQTTClient client, char* topic, char* payload) {
 int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
     char* payload = message->payload;
 
-    printf("Topico: %s Mensagem: %s\n", topicName, payload);
-
     if(strcmp(topicName, "LEDS/voltage") == 0){
-        publish(client, "SBC/voltage", payload);
+//        publish(client, "SBC/voltage", payload);
+        strcpy(voltage, payload);
     }
     else if(strcmp(topicName, "LEDS/D0") == 0){
-        publish(client, "SBC/D0", payload);
+//        publish(client, "SBC/D0", payload);
+        strcpy(d0, payload);
     }
     else if(strcmp(topicName, "LEDS/D1") == 0){
-        publish(client, "SBC/D1", payload);
+//        publish(client, "SBC/D1", payload);
+        strcpy(d1, payload);
+        flag = 1;
     }
 
     MQTTClient_freeMessage(&message);

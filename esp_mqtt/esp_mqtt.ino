@@ -93,7 +93,7 @@ void publishTopic(){
   delay(5000);
   float valor = analogRead(A0)*(3.3/1023.0);
   char valorConv[4];
-  sprintf(valorConv, "%.2f", valor);
+  sprintf(valorConv, "%.1f", valor);
   client.publish(topicVoltage, valorConv);
   
   int d0Value = digitalRead(D0);
