@@ -12,6 +12,10 @@
 #define DB6 26
 #define DB7 27
 
+#define BUTTON_1 19
+#define BUTTON_2 23
+#define BUTTON_3 25
+
 #define MQTT_ADDRESS "tcp://10.0.0.101"
 #define USERNAME "aluno"
 #define PASSWORD "@luno*123"
@@ -23,6 +27,7 @@ int lcd;
 char voltage[10];
 char d0[10];
 char d1[10];
+char time[10] = "5";
 int flag = 0;
 
 void write_1line(char linha1[]);
@@ -35,6 +40,10 @@ int main(){
     
     wiringPiSetup();
     lcd = lcdInit (2, 16, 4, RS, E, DB4, DB5, DB6, DB7, 0, 0, 0, 0);
+    
+    pinMode(BUTTON_1,INPUT);
+	pinMode(BUTTON_2,INPUT);
+	pinMode(BUTTON_3,INPUT);
 
     write_2line("IoT_MQTT", "MI - SD");
 
@@ -53,15 +62,15 @@ int main(){
     if (rc != MQTTCLIENT_SUCCESS){
         printf("\n\rFalha na conexao ao broker MQTT. Erro: %d\n", rc);
         exit(-1);}
-    MQTTClient_subscribe(client, "LEDS/voltage", 2);
-    MQTTClient_subscribe(client, "LEDS/D0", 2);
-    MQTTClient_subscribe(client, "LEDS/D1", 2);
+    MQTTClient_subscribe(client, "VOLTAGE", 2);
+    MQTTClient_subscribe(client, "D0", 2);
+    MQTTClient_subscribe(client, "D1", 2);
+    MQTTClient_subscribe(client, "SBC/TIME", 2);
 
-    
     while(1){
         if(flag == 1){
             lcdClear(lcd);
-            lcdPuts(lcd, "Intervalo: 05s");
+            lcdPrintf(lcd, "Intervalo: %ss", time);
             lcdPosition(lcd,0,1);
             lcdPrintf(lcd, "A0-%s D0-%s D1-%s", voltage, d0, d1);
             flag = 0;
@@ -84,15 +93,23 @@ void publish(MQTTClient client, char* topic, char* payload) {
 int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
     char* payload = message->payload;
 
-    if(strcmp(topicName, "LEDS/voltage") == 0){
-//        publish(client, "SBC/voltage", payload);
+    if(strcmp(topicName, "SBC/TIME") == 0){
+        publish(client, "TIME", payload);
+        strcpy(time, payload);
+    }
+    else if(strcmp(topicName, "SBC/LED") == 0){
+        publish(client, "LED", payload);
         strcpy(voltage, payload);
     }
-    else if(strcmp(topicName, "LEDS/D0") == 0){
+    else if(strcmp(topicName, "VOLTAGE") == 0){
+//        publish(client, "SBC/VOLTAGE", payload);
+        strcpy(voltage, payload);
+    }
+    else if(strcmp(topicName, "D0") == 0){
 //        publish(client, "SBC/D0", payload);
         strcpy(d0, payload);
     }
-    else if(strcmp(topicName, "LEDS/D1") == 0){
+    else if(strcmp(topicName, "D1") == 0){
 //        publish(client, "SBC/D1", payload);
         strcpy(d1, payload);
         flag = 1;

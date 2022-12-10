@@ -1,3 +1,9 @@
+from kivy.config import Config
+
+Config.set('graphics','width',900)
+Config.set('graphics','height',700)
+Config.set('graphics', 'resizable', False)
+
 import paho.mqtt.client as mqtt 
 import socket
 import _thread as thread
@@ -12,7 +18,8 @@ import numpy as np
 from kivy.core.window import Window
 from kivy_garden.graph import Graph, LinePlot
 
-Window.size = (900, 700)
+
+
 
 client = 0
 topics = {'analogico':[], 'd0':[], 'd1':[]}
@@ -34,11 +41,11 @@ class DummyScreen(MDScreen):
 class ConScreen(MDScreen):
     
     def on_enter(self, *args):
-        self.ids.mqtt.text = "10.0.0.101"
+        self.ids.mqtt.text = "broker.emqx.io"
         self.ids.porta.text = "1883"
         self.ids.cli.text = "Desktop"
-        self.ids.user.text = "aluno"
-        self.ids.password.text = '@luno*123'
+        self.ids.user.text = ""
+        self.ids.password.text = ''
     
     def connect_broker(self):
         global client
@@ -108,6 +115,22 @@ class TopCard(MDCard):
 class Topic(MDCard):
     
     pass 
+
+class Digitais(MDCard):
+    pass
+
+class Time(MDCard):
+    def set_time(self):
+        client.publish("SBC/TIME", self.ids.slider_time.value)
+
+class Led(MDCard):
+    def on_checkbox_active(self, checkbox, value):
+        if value:
+            self.ids.led_icon.icon = 'led-on'
+            client.publish('SBC/LED', 'on')
+        else:
+            self.ids.led_icon.icon = 'led-off'
+            client.publish('SBC/LED', 'off')
 
 class TopicPub(MDCard):
     pass

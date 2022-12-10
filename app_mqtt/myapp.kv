@@ -69,28 +69,16 @@
             md_bg_color: rgba(18, 18, 18, 1)
 
         MDFloatLayout:
-            
             Topic:
                 id: sensor_an
                 text_name: 'SENSOR_A0'
                 text_sensor: '0.00'
                 text_unidade: 'Volts'
                 icon_name: 'flash'
-                pos_hint: {'center_x': 0.2,'center_y': 0.6}
-            Topic:
-                id: sensor_d0
-                text_name: 'SENSOR_D0'
-                text_sensor: 'HIGH'
-                text_unidade: 'Level'
-                icon_name: 'square-wave'
-                pos_hint: {'center_x': 0.5,'center_y': 0.6}
-            Topic:
-                id: sensor_d1
-                text_name: 'SENSOR_D1'
-                text_sensor: 'HIGH'
-                icon_name: 'square-wave'
-                pos_hint: {'center_x': 0.8,'center_y': 0.6}
-                text_unidade: 'Level'
+                pos_hint: {'center_x': 0.18,'center_y': 0.63}
+            Digitais:
+            Led:
+            Time:
         
 
 <TopCard>:
@@ -154,11 +142,289 @@
             pos_hint: {'center_x': .5,'center_y': .15}
             on_release: root.add_card(name.text, topic.text)
 
+<Led>:
+    orientation: 'vertical'
+    size_hint_y:None
+    size_hint_x:None
+    height:'220dp'
+    width:'250dp'
+    pos_hint: {'center_x': 0.18,'center_y': 0.23}
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint_y: .2
+        MDLabel:
+            text: 'LED'
+            halign: 'center'
+            font_style: 'Subtitle1'
+            size_hint_y: .2
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+    MDFloatLayout:
+
+        MDIcon:
+            id: led_icon
+            icon: 'led-off'
+            color: '#673AB7'
+            adaptive_size: True
+            pos_hint: {"center_x": .5, "center_y": .67}
+            allow_selection: True
+            font_size: '100sp' 
+        
+        MDSwitch:
+            pos_hint: {'center_x': .5, 'center_y': .15}
+            on_active: root.on_checkbox_active(*args)
+
+<Time>:
+    orientation: 'vertical'
+    size_hint_y:None
+    size_hint_x:None
+    height:'142dp'
+    width:'250dp'
+    pos_hint: {'center_x': 0.474,'center_y': 0.175}
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint_y: .25
+        MDLabel:
+            text: 'TIME'
+            halign: 'center'
+            font_style: 'Subtitle1'
+            
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+    MDFloatLayout:
+
+        MDSlider:
+            id: slider_time
+            min: 5
+            max: 60
+            step: 5
+            value: 5
+            pos_hint: {'center_x': .5,'center_y': .78}
+            size_hint_x: .8
+        MDLabel:
+            text: "seconds"
+            pos_hint: {'center_x': .5,'center_y': .62}
+            halign: 'center'
+            font_style: 'Caption'          
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+        MDRoundFlatButton:
+            text: "Publish"
+            size_hint_x: .6
+            pos_hint: {'center_x': .5,'center_y': .25}
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+
+            on_release: root.set_time()
+
+<Digitais>:
+    orientation: 'vertical'
+    size_hint_y:None
+    size_hint_x:None
+    height:'392dp'
+    width:'550dp'
+    pos_hint: {'center_x': 0.64,'center_y': 0.57}
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint_y: .2
+        MDLabel:
+            text: 'DIGITAL_SENSORS'
+            halign: 'center'
+            font_style: 'Subtitle1'
+            size_hint_y: .2
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+    MDFloatLayout:
+        MDFloatLayout:
+            orientation: 'vertical'
+            size_hint: .3, .3
+            pos_hint: {'center_x': .18,'center_y': .85}
+            MDLabel:
+                text: 'D0'
+                halign: 'center'
+                font_style: 'Subtitle1'
+                theme_text_color: 'Custom'
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .9}
+            MDIcon:
+                icon: 'radiobox-marked'
+                color: '#673AB7'
+                adaptive_size: True
+                pos_hint: {"center_x": .5, "center_y": .5}
+                allow_selection: True
+                font_size: '50sp' 
+            MDLabel:
+                text: 'Update: 22:40:20'
+                halign: 'center'
+                font_style: 'Caption'
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .15}
+
+        MDFloatLayout:
+            orientation: 'vertical'
+            size_hint: .3, .3
+            pos_hint: {'center_x': .18,'center_y': .52}
+            MDLabel:
+                text: 'D0'
+                halign: 'center'
+                font_style: 'Subtitle1'
+                theme_text_color: 'Custom'
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .9}
+            MDIcon:
+                icon: 'radiobox-marked'
+                color: '#673AB7'
+                adaptive_size: True
+                pos_hint: {"center_x": .5, "center_y": .5}
+                allow_selection: True
+                font_size: '50sp' 
+            MDLabel:
+                text: 'Update: 22:40:20'
+                halign: 'center'
+                font_style: 'Caption'
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .15}
+        MDFloatLayout:
+            orientation: 'vertical'
+            size_hint: .3, .3
+            pos_hint: {'center_x': .18,'center_y': .19}
+            MDLabel:
+                text: 'D0'
+                halign: 'center'
+                font_style: 'Subtitle1'
+                theme_text_color: 'Custom'
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .9}
+            MDIcon:
+                icon: 'radiobox-marked'
+                color: '#673AB7'
+                adaptive_size: True
+                pos_hint: {"center_x": .5, "center_y": .5}
+                allow_selection: True
+                font_size: '50sp' 
+            MDLabel:
+                text: 'Update: 22:40:20'
+                halign: 'center'
+                font_style: 'Caption'
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .15}
+        MDFloatLayout:
+            orientation: 'vertical'
+            size_hint: .3, .3
+            pos_hint: {'center_x': .82,'center_y': .85}
+            MDLabel:
+                text: 'D0'
+                halign: 'center'
+                font_style: 'Subtitle1'
+                theme_text_color: 'Custom'
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .9}
+            MDIcon:
+                icon: 'radiobox-marked'
+                color: '#673AB7'
+                adaptive_size: True
+                pos_hint: {"center_x": .5, "center_y": .5}
+                allow_selection: True
+                font_size: '50sp' 
+            MDLabel:
+                text: 'Update: 22:40:20'
+                halign: 'center'
+                font_style: 'Caption'
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .15}
+        MDFloatLayout:
+            orientation: 'vertical'
+            size_hint: .3, .3
+            pos_hint: {'center_x': .82,'center_y': .52}
+            MDLabel:
+                text: 'D0'
+                halign: 'center'
+                font_style: 'Subtitle1'
+                theme_text_color: 'Custom'
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .9}
+            MDIcon:
+                icon: 'radiobox-marked'
+                color: '#673AB7'
+                adaptive_size: True
+                pos_hint: {"center_x": .5, "center_y": .5}
+                allow_selection: True
+                font_size: '50sp' 
+            MDLabel:
+                text: 'Update: 22:40:20'
+                halign: 'center'
+                font_style: 'Caption'
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .15}
+        MDFloatLayout:
+            orientation: 'vertical'
+            size_hint: .3, .3
+            pos_hint: {'center_x': .82,'center_y': .19}
+            MDLabel:
+                text: 'D0'
+                halign: 'center'
+                font_style: 'Subtitle1'
+                theme_text_color: 'Custom'
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .9}
+            MDIcon:
+                icon: 'radiobox-marked'
+                color: '#673AB7'
+                adaptive_size: True
+                pos_hint: {"center_x": .5, "center_y": .5}
+                allow_selection: True
+                font_size: '50sp' 
+            MDLabel:
+                text: 'Update: 22:40:20'
+                halign: 'center'
+                font_style: 'Caption'
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .15}
+        MDFloatLayout:
+            orientation: 'vertical'
+            size_hint: .3, .3
+            pos_hint: {'center_x': .5,'center_y': .19}
+            MDLabel:
+                text: 'D0'
+                halign: 'center'
+                font_style: 'Subtitle1'
+                theme_text_color: 'Custom'
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .9}
+            MDIcon:
+                icon: 'radiobox-marked'
+                color: '#673AB7'
+                adaptive_size: True
+                pos_hint: {"center_x": .5, "center_y": .5}
+                allow_selection: True
+                font_size: '50sp' 
+            MDLabel:
+                text: 'Update: 22:40:20'
+                halign: 'center'
+                font_style: 'Caption'
+                theme_text_color: "Custom"
+                text_color: '#673AB7'
+                pos_hint: {'center_x': .5,'center_y': .15}
+        MDIcon:
+            icon: 'square-wave'
+            color: '#673AB7'
+            adaptive_size: True
+            pos_hint: {"center_x": .5, "center_y": .7}
+            allow_selection: True
+            font_size: '80sp' 
+        
+
 <Topic>:
     orientation: 'vertical'
     size_hint_y:None
     size_hint_x:None
-    height:'280dp'
+    height:'306dp'
     width:'250dp'
     text_unidade: ''
     text_name: ''

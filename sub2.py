@@ -19,7 +19,7 @@ def on_message(client, userdata, message):
 client.on_connect = on_connect
 client.connect(broker, port)
 
-client.subscribe("LEDS/#")
+client.subscribe("SBC/TIME")
 client.on_message = on_message
 
 client.loop_start()

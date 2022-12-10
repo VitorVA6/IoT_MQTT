@@ -23,10 +23,10 @@ def on_message(client, userdata, message):
 client.on_connect = on_connect
 client.connect(broker, port)
 
-client.subscribe("SBC/#")
+client.subscribe("TESTE")
 client.on_message = on_message
 
 client.loop_start()
 
-time.sleep(30)
+time.sleep(60)
 client.loop_stop()

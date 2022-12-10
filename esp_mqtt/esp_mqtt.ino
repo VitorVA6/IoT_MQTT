@@ -3,6 +3,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <PubSubClient.h>
+#include <TimedAction.h>
 
 
 //Definicoes
@@ -21,8 +22,40 @@ const char *mqtt_password = "@luno*123";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-const char* topicVoltage = "LEDS/voltage";
 
+int tempo = 5;
+
+void publishTopic(){
+  float valor = analogRead(A0)*(3.3/1023.0);
+  char valorConv[4];
+  sprintf(valorConv, "%.1f", valor);
+  client.publish("VOLTAGE", valorConv);
+  
+  int d0Value = digitalRead(D0);
+  char d0valueConv[1];
+  sprintf(d0valueConv, "%d", d0Value);
+  client.publish("D0", d0valueConv);
+
+  int d1Value = digitalRead(D1);
+  char d1valueConv[1];
+  sprintf(d1valueConv, "%d", d1Value);
+  client.publish("D1", d1valueConv);
+}
+
+TimedAction proc_aux = TimedAction(2000, publishTopic);
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  if(strcmp(topic,"TIME") == 0){
+    char aux[10];
+    
+    for (int i=0;i<length;i++) {
+      aux[i] = (char)payload[i];
+    }
+    client.publish("TESTE", aux);
+    tempo = atoi(aux);
+    proc_aux.setInterval(tempo*1000);
+  }
+}
 
 void connectWifi_OTA(){
   Serial.begin(9600);
@@ -80,7 +113,7 @@ void reconnect_MQTT(){
   if (client.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
     Serial.println("connected");
     client.publish("outTopic", "hello world");
-    client.subscribe("inTopic");
+    client.subscribe("TIME");
   } else {
     Serial.print("failed, rc=");
     Serial.print(client.state());
@@ -89,27 +122,10 @@ void reconnect_MQTT(){
   }
 }
 
-void publishTopic(){
-  delay(5000);
-  float valor = analogRead(A0)*(3.3/1023.0);
-  char valorConv[4];
-  sprintf(valorConv, "%.1f", valor);
-  client.publish(topicVoltage, valorConv);
-  
-  int d0Value = digitalRead(D0);
-  char d0valueConv[1];
-  sprintf(d0valueConv, "%d", d0Value);
-  client.publish("LEDS/D0", d0valueConv);
-
-  int d1Value = digitalRead(D1);
-  char d1valueConv[1];
-  sprintf(d1valueConv, "%d", d1Value);
-  client.publish("LEDS/D1", d1valueConv);
-}
-
 void setup() {
   connectWifi_OTA();
   client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
 }
 
 void loop() {
@@ -117,5 +133,6 @@ void loop() {
   if (!client.connected()) {
     reconnect_MQTT();
   }
-  publishTopic();
+  proc_aux.check();
+  client.loop();
 }
