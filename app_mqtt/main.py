@@ -3,7 +3,7 @@ from kivy.config import Config
 Config.set('graphics','width',1000)
 Config.set('graphics','height',800)
 Config.set('graphics', 'resizable', False)
-Config.set('graphics', 'custom_titlebar', True)
+#Config.set('graphics', 'custom_titlebar', True)
 
 import paho.mqtt.client as mqtt 
 import socket
@@ -18,13 +18,10 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 import numpy as np
 from scipy.interpolate import make_interp_spline
-from kivy.core.window import Window
-from kivy_garden.graph import Graph, LinePlot
 import matplotlib
 matplotlib.use("module://kivy.garden.matplotlib.backend_kivy")
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
-
 
 plt.style.use('grayscale')
 fig = plt.figure()
@@ -37,7 +34,6 @@ y = np.array([2.1, 2.3, 1.2, 1.9, 2, 0.7, 2.7, 2.1, 1.3, 0.6])
 x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 ax.grid(color='#673AB7', linestyle='-', linewidth=.5, alpha = .3)
 xlabels = [ '10th', '9th', '8th', '7th', '6th', '5th', '4th', '3th', '2th', '1th']
-
 
 xy_spline = make_interp_spline(x, y)
 x1 = np.linspace(x.min(), x.max(), 500)
@@ -55,9 +51,8 @@ plt.gca().spines['left'].set_visible(False)
 plt.gca().spines['bottom'].set_visible(False)
 plt.gca().set_xticklabels(xlabels)
 
-
 client = 0
-topics = {'analogico':[], 'd0':[], 'd1':[]}
+topics = {'analogico':[], 'd0':[], 'd1':[], 'd2':[], 'd3':[], 'd4':[], 'd5':[], 'd6':[]}
 actual_plot = None
 
 class Manager(ScreenManager):
@@ -106,7 +101,14 @@ class TopicScreen(MDScreen):
 
     def on_enter(self, *args):
         global client
-        client.subscribe('SBC/voltage')
+        client.subscribe('SBC/VOLTAGE')
+        client.subscribe('SBC/D0')
+        client.subscribe('SBC/D1')
+        client.subscribe('SBC/D2')
+        client.subscribe('SBC/D3')
+        client.subscribe('SBC/D4')
+        client.subscribe('SBC/D5')
+        client.subscribe('SBC/D6')
         client.on_message = self.on_message
         thread.start_new_thread(self.subscribe_loop, ())
     
@@ -114,18 +116,112 @@ class TopicScreen(MDScreen):
         global actual_plot
         global topics
         msg = str(message.payload.decode("utf-8"))
-        if message.topic == 'SBC/voltage':
+        if message.topic == 'SBC/VOLTAGE':
             if(len(topics['analogico']) < 10 ):
                 topics['analogico'].append(float(msg))
                 self.ids.sensor_an.text_sensor = msg
-                if actual_plot != None:
-                    actual_plot.update()
             else:
                 del(topics['analogico'][0])
                 topics['analogico'].append(float(msg))
-                self.ids.sensor_an.text_sensor = msg
-                if actual_plot != None:
-                    actual_plot.update()        
+                self.ids.sensor_an.text_sensor = msg        
+        if message.topic == 'SBC/D0':
+            if(len(topics['d0']) < 10 ):
+                topics['d0'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d0 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d0 = '#673AB7'
+            else:
+                del(topics['d0'][0])
+                topics['d0'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d0 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d0 = '#673AB7'                   
+        if message.topic == 'SBC/D1':
+            if(len(topics['d1']) < 10 ):
+                topics['d1'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d1 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d1 = '#673AB7'
+            else:
+                del(topics['d1'][0])
+                topics['d1'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d1 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d1 = '#673AB7'                   
+        if message.topic == 'SBC/D2':
+            if(len(topics['d2']) < 10 ):
+                topics['d2'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d2 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d2 = '#673AB7'
+            else:
+                del(topics['d2'][0])
+                topics['d2'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d2 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d2 = '#673AB7'                   
+        if message.topic == 'SBC/D3':
+            if(len(topics['d3']) < 10 ):
+                topics['d3'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d3 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d3 = '#673AB7'
+            else:
+                del(topics['d3'][0])
+                topics['d3'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d3 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d3 = '#673AB7'                   
+        if message.topic == 'SBC/D4':
+            if(len(topics['d4']) < 10 ):
+                topics['d4'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d4 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d4 = '#673AB7'
+            else:
+                del(topics['d4'][0])
+                topics['d4'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d4 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d4 = '#673AB7'                   
+        if message.topic == 'SBC/D5':
+            if(len(topics['d5']) < 10 ):
+                topics['d5'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d5 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d5 = '#673AB7'
+            else:
+                del(topics['d5'][0])
+                topics['d5'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d5 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d5 = '#673AB7'                   
+        if message.topic == 'SBC/D6':
+            if(len(topics['d6']) < 10 ):
+                topics['d6'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d6 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d6 = '#673AB7'
+            else:
+                del(topics['d6'][0])
+                topics['d6'].append(msg)
+                if (msg == '0'):
+                    self.ids.sensor_digital.color_d6 = '#d92222'
+                else:
+                    self.ids.sensor_digital.color_d6 = '#673AB7'                   
 
     def subscribe_loop(self):
         client.loop_start()
@@ -145,7 +241,6 @@ class TopCard(MDCard):
     
     def close_card(self):
         self.parent.remove_widget(self)
-
 
 class Topic(MDCard):
     

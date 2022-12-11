@@ -77,6 +77,7 @@
                 icon_name: 'flash'
                 pos_hint: {'center_x': 0.166,'center_y': 0.764}
             Digitais:
+                id: sensor_digital
             Led:
             Time:
             MDBoxLayout:
@@ -169,6 +170,13 @@
     height:'320dp'
     width:'400dp'
     pos_hint: {'center_x': 0.502,'center_y': 0.67}
+    color_d0: '#673AB7'
+    color_d1: '#673AB7'
+    color_d2: '#673AB7'
+    color_d3: '#673AB7'
+    color_d4: '#673AB7'
+    color_d5: '#673AB7'
+    color_d6: '#673AB7'
     MDBoxLayout:
         orientation: 'vertical'
         size_hint_y: .2
@@ -193,7 +201,7 @@
                 pos_hint: {'center_x': .5,'center_y': .9}
             MDIcon:
                 icon: 'radiobox-marked'
-                color: '#673AB7'
+                color: root.color_d0
                 adaptive_size: True
                 pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
@@ -204,7 +212,7 @@
             size_hint: .3, .3
             pos_hint: {'center_x': .18,'center_y': .52}
             MDLabel:
-                text: 'D0'
+                text: 'D1'
                 halign: 'center'
                 font_style: 'Subtitle1'
                 theme_text_color: 'Custom'
@@ -212,7 +220,7 @@
                 pos_hint: {'center_x': .5,'center_y': .9}
             MDIcon:
                 icon: 'radiobox-marked'
-                color: '#673AB7'
+                color: root.color_d1
                 adaptive_size: True
                 pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
@@ -223,7 +231,7 @@
             size_hint: .3, .3
             pos_hint: {'center_x': .18,'center_y': .19}
             MDLabel:
-                text: 'D0'
+                text: 'D2'
                 halign: 'center'
                 font_style: 'Subtitle1'
                 theme_text_color: 'Custom'
@@ -231,7 +239,7 @@
                 pos_hint: {'center_x': .5,'center_y': .9}
             MDIcon:
                 icon: 'radiobox-marked'
-                color: '#673AB7'
+                color: root.color_d2
                 adaptive_size: True
                 pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
@@ -242,7 +250,7 @@
             size_hint: .3, .3
             pos_hint: {'center_x': .82,'center_y': .85}
             MDLabel:
-                text: 'D0'
+                text: 'D3'
                 halign: 'center'
                 font_style: 'Subtitle1'
                 theme_text_color: 'Custom'
@@ -250,7 +258,7 @@
                 pos_hint: {'center_x': .5,'center_y': .9}
             MDIcon:
                 icon: 'radiobox-marked'
-                color: '#673AB7'
+                color: root.color_d3
                 adaptive_size: True
                 pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
@@ -261,7 +269,7 @@
             size_hint: .3, .3
             pos_hint: {'center_x': .82,'center_y': .52}
             MDLabel:
-                text: 'D0'
+                text: 'D4'
                 halign: 'center'
                 font_style: 'Subtitle1'
                 theme_text_color: 'Custom'
@@ -269,7 +277,7 @@
                 pos_hint: {'center_x': .5,'center_y': .9}
             MDIcon:
                 icon: 'radiobox-marked'
-                color: '#673AB7'
+                color: root.color_d4
                 adaptive_size: True
                 pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
@@ -280,7 +288,7 @@
             size_hint: .3, .3
             pos_hint: {'center_x': .82,'center_y': .19}
             MDLabel:
-                text: 'D0'
+                text: 'D5'
                 halign: 'center'
                 font_style: 'Subtitle1'
                 theme_text_color: 'Custom'
@@ -288,7 +296,7 @@
                 pos_hint: {'center_x': .5,'center_y': .9}
             MDIcon:
                 icon: 'radiobox-marked'
-                color: '#673AB7'
+                color: root.color_d5
                 adaptive_size: True
                 pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
@@ -299,7 +307,7 @@
             size_hint: .3, .3
             pos_hint: {'center_x': .5,'center_y': .19}
             MDLabel:
-                text: 'D0'
+                text: 'D6'
                 halign: 'center'
                 font_style: 'Subtitle1'
                 theme_text_color: 'Custom'
@@ -307,7 +315,7 @@
                 pos_hint: {'center_x': .5,'center_y': .9}
             MDIcon:
                 icon: 'radiobox-marked'
-                color: '#673AB7'
+                color: root.color_d6
                 adaptive_size: True
                 pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
