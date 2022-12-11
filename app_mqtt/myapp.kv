@@ -67,88 +67,31 @@
             right_action_items: [["cog-outline", lambda x: x]]
             pos_hint: {'top': 1}
             md_bg_color: rgba(18, 18, 18, 1)
-
         MDFloatLayout:
             Topic:
                 id: sensor_an
+                radius: dp(8)
                 text_name: 'SENSOR_A0'
                 text_sensor: '0.00'
                 text_unidade: 'Volts'
                 icon_name: 'flash'
-                pos_hint: {'center_x': 0.18,'center_y': 0.63}
+                pos_hint: {'center_x': 0.166,'center_y': 0.764}
             Digitais:
             Led:
             Time:
-        
-
-<TopCard>:
-    orientation: 'vertical'
-    size_hint: .6, .6
-    pos_hint: {'center_x': .5,'center_y': .5}
-    radius: dp(20)
-
-    MDBoxLayout:
-        size_hint_y: .2
-        md_bg_color: app.theme_cls.primary_color
-        MDLabel:
-            text: "Add Topic"
-            halign: 'center'
-            font_style: 'H6'
-            theme_text_color: 'Custom'
-            text_color: 1, 1, 1, 1
-        MDIconButton:
-            icon: 'close'
-            theme_text_color: 'Custom'
-            text_color: 1, 1, 1, 1
-            pos_hint: {'center_x': .9,'center_y': .5}
-            on_release: root.close_card()
-
-    MDFloatLayout:        
-        MDTextField:
-            hint_text: "Topic"
-            size_hint_x: .8
-            pos_hint: {'center_x': .5,'center_y': .8}
-            id: topic
-        MDTextField:
-            hint_text: "Name"
-            size_hint_x: .8
-            pos_hint: {'center_x': .5,'center_y': .6}
-            id: name
-        MDBoxLayout:
-            pos_hint: {'center_x': 0.5,'center_y': .4}
-            size_hint: .85, .2
-            MDCheckbox:
-                size_hint: None, None
-                size: "40dp", "40dp"
-                pos_hint: {'center_x': .5, 'center_y': .5}
-            MDLabel:
-                text: "Publish"      
-                font_style: 'Subtitle2' 
-        MDLabel:
-            text: ""
-            pos_hint: {'center_x': .5,'center_y': .3}
-            theme_text_color: 'Custom'
-            text_color: 1, 0, 0, 1
-            halign: 'center'
-            id: msg_error        
-            font_style: 'Caption'       
-
-        MDRoundFlatButton:
-            text: "Confirm"
-            size_hint_x: .6
-            theme_text_color: 'Custom'
-            text_color: '#673AB7'
-            padding_vertical: "8dp"
-            pos_hint: {'center_x': .5,'center_y': .15}
-            on_release: root.add_card(name.text, topic.text)
+            MDBoxLayout:
+                padding: ['40dp', '10dp', '40dp', '15dp']
+                Card_graph:
+            
 
 <Led>:
     orientation: 'vertical'
     size_hint_y:None
     size_hint_x:None
-    height:'220dp'
-    width:'250dp'
-    pos_hint: {'center_x': 0.18,'center_y': 0.23}
+    height:'200dp'
+    width:'245dp'
+    radius: dp(8)
+    pos_hint: {'center_x': 0.836,'center_y': 0.595}
     MDBoxLayout:
         orientation: 'vertical'
         size_hint_y: .2
@@ -175,12 +118,13 @@
             on_active: root.on_checkbox_active(*args)
 
 <Time>:
+    radius: dp(8)
     orientation: 'vertical'
     size_hint_y:None
     size_hint_x:None
     height:'142dp'
     width:'250dp'
-    pos_hint: {'center_x': 0.474,'center_y': 0.175}
+    pos_hint: {'center_x': 0.166,'center_y': 0.559}
     MDBoxLayout:
         orientation: 'vertical'
         size_hint_y: .25
@@ -218,12 +162,13 @@
             on_release: root.set_time()
 
 <Digitais>:
+    radius: dp(8)
     orientation: 'vertical'
     size_hint_y:None
     size_hint_x:None
-    height:'392dp'
-    width:'550dp'
-    pos_hint: {'center_x': 0.64,'center_y': 0.57}
+    height:'320dp'
+    width:'400dp'
+    pos_hint: {'center_x': 0.502,'center_y': 0.67}
     MDBoxLayout:
         orientation: 'vertical'
         size_hint_y: .2
@@ -250,16 +195,9 @@
                 icon: 'radiobox-marked'
                 color: '#673AB7'
                 adaptive_size: True
-                pos_hint: {"center_x": .5, "center_y": .5}
+                pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
                 font_size: '50sp' 
-            MDLabel:
-                text: 'Update: 22:40:20'
-                halign: 'center'
-                font_style: 'Caption'
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                pos_hint: {'center_x': .5,'center_y': .15}
 
         MDFloatLayout:
             orientation: 'vertical'
@@ -276,16 +214,10 @@
                 icon: 'radiobox-marked'
                 color: '#673AB7'
                 adaptive_size: True
-                pos_hint: {"center_x": .5, "center_y": .5}
+                pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
                 font_size: '50sp' 
-            MDLabel:
-                text: 'Update: 22:40:20'
-                halign: 'center'
-                font_style: 'Caption'
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                pos_hint: {'center_x': .5,'center_y': .15}
+
         MDFloatLayout:
             orientation: 'vertical'
             size_hint: .3, .3
@@ -301,16 +233,10 @@
                 icon: 'radiobox-marked'
                 color: '#673AB7'
                 adaptive_size: True
-                pos_hint: {"center_x": .5, "center_y": .5}
+                pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
                 font_size: '50sp' 
-            MDLabel:
-                text: 'Update: 22:40:20'
-                halign: 'center'
-                font_style: 'Caption'
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                pos_hint: {'center_x': .5,'center_y': .15}
+
         MDFloatLayout:
             orientation: 'vertical'
             size_hint: .3, .3
@@ -326,16 +252,10 @@
                 icon: 'radiobox-marked'
                 color: '#673AB7'
                 adaptive_size: True
-                pos_hint: {"center_x": .5, "center_y": .5}
+                pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
                 font_size: '50sp' 
-            MDLabel:
-                text: 'Update: 22:40:20'
-                halign: 'center'
-                font_style: 'Caption'
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                pos_hint: {'center_x': .5,'center_y': .15}
+
         MDFloatLayout:
             orientation: 'vertical'
             size_hint: .3, .3
@@ -351,16 +271,10 @@
                 icon: 'radiobox-marked'
                 color: '#673AB7'
                 adaptive_size: True
-                pos_hint: {"center_x": .5, "center_y": .5}
+                pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
                 font_size: '50sp' 
-            MDLabel:
-                text: 'Update: 22:40:20'
-                halign: 'center'
-                font_style: 'Caption'
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                pos_hint: {'center_x': .5,'center_y': .15}
+
         MDFloatLayout:
             orientation: 'vertical'
             size_hint: .3, .3
@@ -376,16 +290,10 @@
                 icon: 'radiobox-marked'
                 color: '#673AB7'
                 adaptive_size: True
-                pos_hint: {"center_x": .5, "center_y": .5}
+                pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
                 font_size: '50sp' 
-            MDLabel:
-                text: 'Update: 22:40:20'
-                halign: 'center'
-                font_style: 'Caption'
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                pos_hint: {'center_x': .5,'center_y': .15}
+
         MDFloatLayout:
             orientation: 'vertical'
             size_hint: .3, .3
@@ -401,16 +309,10 @@
                 icon: 'radiobox-marked'
                 color: '#673AB7'
                 adaptive_size: True
-                pos_hint: {"center_x": .5, "center_y": .5}
+                pos_hint: {"center_x": .5, "center_y": .4}
                 allow_selection: True
                 font_size: '50sp' 
-            MDLabel:
-                text: 'Update: 22:40:20'
-                halign: 'center'
-                font_style: 'Caption'
-                theme_text_color: "Custom"
-                text_color: '#673AB7'
-                pos_hint: {'center_x': .5,'center_y': .15}
+
         MDIcon:
             icon: 'square-wave'
             color: '#673AB7'
@@ -424,7 +326,7 @@
     orientation: 'vertical'
     size_hint_y:None
     size_hint_x:None
-    height:'306dp'
+    height:'167dp'
     width:'250dp'
     text_unidade: ''
     text_name: ''
@@ -432,7 +334,7 @@
     icon_name: ''
     MDBoxLayout:
         orientation: 'vertical'
-        size_hint_y: .2
+        size_hint_y: .3
         MDLabel:
             text: root.text_name
             halign: 'center'
@@ -446,17 +348,17 @@
             icon: root.icon_name
             color: '#673AB7'
             adaptive_size: True
-            pos_hint: {"center_x": .5, "center_y": .9}
+            pos_hint: {"center_x": .5, "center_y": .8}
             allow_selection: True
-            font_size: '50sp' 
+            font_size: '40sp' 
 
         MDLabel:
             text: root.text_sensor
             halign: 'center'
-            font_style: 'H2'
+            font_style: 'H3'
             theme_text_color: "Custom"
             text_color: '#673AB7'
-            pos_hint: {'center_x': .5,'center_y': .6}
+            pos_hint: {'center_x': .5,'center_y': .4}
         
         MDLabel:
             text: root.text_unidade
@@ -464,48 +366,22 @@
             font_style: 'Subtitle2'
             theme_text_color: "Custom"
             text_color: '#673AB7'
-            pos_hint: {'center_x': .5,'center_y': .45}
-
-        MDLabel:
-            text: 'Last update in 22:40:20'
-            halign: 'center'
-            font_style: 'Caption'
-            theme_text_color: "Custom"
-            text_color: '#673AB7'
-            pos_hint: {'center_x': .5,'center_y': .35}
-        
-        MDRoundFlatButton:
-            text: "Graphics"
-            size_hint_x: .8
-            pos_hint: {'center_x': .5,'center_y': .15}
-            theme_text_color: 'Custom'
-            text_color: '#673AB7'
-            padding_vertical: "2dp"
-            on_release: app.root.get_screen('topics').create_graph()
+            pos_hint: {'center_x': .5,'center_y': .2}
 
 <Graphics>:
-    
+    padding: ['30dp', '15dp', '30dp', '15dp']
+    size_hint_y: 1
+
+<Card_graph>:
+    radius: dp(8)
     orientation: 'vertical'
-    size_hint: .7, .7
-    pos_hint: {'center_x': .5,'center_y': .5}  
-    elevation: 10
-    MDBoxLayout:
-        size_hint_y: .15
-        md_bg_color: app.theme_cls.primary_color
-        MDLabel:
-            text: "Histórico"
-            halign: 'center'
-            font_style: 'H6'
-            theme_text_color: 'Custom'
-            text_color: 1, 1, 1, 1
-        MDIconButton:
-            icon: 'close'
-            theme_text_color: 'Custom'
-            text_color: 1, 1, 1, 1
-            pos_hint: {'center_x': .9,'center_y': .5}
-            on_release: root.close_card()
+    size_hint: .6, .45
     
-    MDBoxLayout:  
-        id: graph
-        size_hint_y: .85  
-        padding: '20dp'
+    MDLabel:
+        size_hint_y: .15
+        text: 'ANALOG_HISTORY'
+        halign: 'center'
+        font_style: 'Subtitle1'
+        theme_text_color: 'Custom'
+        text_color: '#673AB7'
+    Graphics:

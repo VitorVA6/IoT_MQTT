@@ -1,8 +1,9 @@
 from kivy.config import Config
 
-Config.set('graphics','width',900)
-Config.set('graphics','height',700)
+Config.set('graphics','width',1000)
+Config.set('graphics','height',800)
 Config.set('graphics', 'resizable', False)
+Config.set('graphics', 'custom_titlebar', True)
 
 import paho.mqtt.client as mqtt 
 import socket
@@ -13,12 +14,46 @@ from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, NoTransition, SlideTransition
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 import numpy as np
+from scipy.interpolate import make_interp_spline
 from kivy.core.window import Window
 from kivy_garden.graph import Graph, LinePlot
+import matplotlib
+matplotlib.use("module://kivy.garden.matplotlib.backend_kivy")
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+import matplotlib.pyplot as plt
 
 
+plt.style.use('grayscale')
+fig = plt.figure()
+fig.patch.set_alpha(0)
+
+ax = plt.axes()
+ax.patch.set_alpha(0)
+
+y = np.array([2.1, 2.3, 1.2, 1.9, 2, 0.7, 2.7, 2.1, 1.3, 0.6])
+x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+ax.grid(color='#673AB7', linestyle='-', linewidth=.5, alpha = .3)
+xlabels = [ '10th', '9th', '8th', '7th', '6th', '5th', '4th', '3th', '2th', '1th']
+
+
+xy_spline = make_interp_spline(x, y)
+x1 = np.linspace(x.min(), x.max(), 500)
+y1 = xy_spline(x1)
+
+plt.plot(x1, y1, color = '#673AB7')
+plt.scatter(x, y, color = '#673AB7')
+plt.xticks(np.arange(min(x), max(x)+1, 1.0))
+plt.tick_params('both', colors = '#673AB7', bottom = False, left = False)
+plt.grid(True)
+plt.tight_layout()
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['right'].set_visible(False)
+plt.gca().spines['left'].set_visible(False)
+plt.gca().spines['bottom'].set_visible(False)
+plt.gca().set_xticklabels(xlabels)
 
 
 client = 0
@@ -135,36 +170,14 @@ class Led(MDCard):
 class TopicPub(MDCard):
     pass
 
-class Graphics(MDCard):
+class Graphics(MDBoxLayout):
     def __init__(self, **kwargs):
-        global topics
         super().__init__(**kwargs)
-        self.samples = 10
-        self.graph = Graph(xmin = 0, xmax = self.samples-1, 
-                            ymin = 0, ymax = 3.5,
-                            border_color = [1, 1, 1, 1],
-                            tick_color = [1, 1, 1, 1],
-                            x_grid = True, y_grid = True, 
-                            draw_border = True, 
-                            x_grid_label=True, y_grid_label = True,
-                            x_ticks_major = 2, y_ticks_major = 1
-                            )
-        self.ids.graph.add_widget(self.graph)
-        self.plot_y = np.array(topics['analogico'])
-        self.plot_x = np.arange(len(self.plot_y))
-        self.plot = LinePlot(color = [1, 1, 1, 1], line_width = 1.1)
-        self.plot.points = [(x, y) for x, y in zip(self.plot_x, self.plot_y)]
-        self.graph.add_plot(self.plot)
+            
+        self.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
-    def update(self):
-        self.plot_y = np.array(topics['analogico'])
-        self.plot_x = np.arange(len(self.plot_y))
-        self.plot.points = [(x, y) for x, y in zip(self.plot_x, self.plot_y)]
-
-    def close_card(self):
-        global actual_plot
-        actual_plot = None
-        self.parent.remove_widget(self)
+class Card_graph(MDCard):
+    pass
 
 class MyApp(MDApp):               
 
