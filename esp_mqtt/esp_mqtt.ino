@@ -51,7 +51,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     for (int i=0;i<length;i++) {
       aux[i] = (char)payload[i];
     }
-    client.publish("TESTE", aux);
     tempo = atoi(aux);
     proc_aux.setInterval(tempo*1000);
   }

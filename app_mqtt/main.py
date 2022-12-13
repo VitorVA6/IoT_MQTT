@@ -71,11 +71,11 @@ class DummyScreen(MDScreen):
 class ConScreen(MDScreen):
     
     def on_enter(self, *args):
-        self.ids.mqtt.text = "broker.emqx.io"
+        self.ids.mqtt.text = "10.0.0.101"
         self.ids.porta.text = "1883"
         self.ids.cli.text = "Desktop"
-        self.ids.user.text = ""
-        self.ids.password.text = ''
+        self.ids.user.text = "aluno"
+        self.ids.password.text = '@luno*123'
     
     def connect_broker(self):
         global client
