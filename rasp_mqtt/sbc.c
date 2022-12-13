@@ -26,6 +26,7 @@
 
 MQTTClient client;
 int lcd;
+
 char voltage[10] = "0";
 char d0[10] = "0";
 char d1[10] = "0";
@@ -34,7 +35,9 @@ char d3[10] = "0";
 char d4[10] = "0";
 char d5[10] = "0";
 char d6[10] = "0";
+char led[10] = "OFF";
 int tempo = 5;
+
 int flag = 0;
 int screen = 0;
 
@@ -49,12 +52,53 @@ int on_message(void *context, char *topicName, int topicLen, MQTTClient_message 
 1 - sensor analógico
 2 - sensores digitais
 3 - sensores digitais p2
-3 - sensores digitais p3
-4 - LED
-5 - configuração de tempo
-6 - status da conexão
+4 - sensores digitais p3
+5 - LED
+6 - configuração de tempo
+7 - status da conexão
 */
 
+void screen_1(){
+    lcdClear(lcd);
+    lcdPuts(lcd, "   Sensor A0    ");
+    lcdPosition(lcd,0,1);
+    lcdPrintf(lcd, "      %sV     ", voltage);
+}
+
+void screen_2(){
+    lcdClear(lcd);
+    lcdPuts(lcd, " Sensores D0-D1 ");
+    lcdPosition(lcd,0,1);
+    lcdPrintf(lcd, "  D0-%s  D1-%s", d0, d1);
+}
+
+void screen_3(){
+    lcdClear(lcd);
+    lcdPuts(lcd, " Sensores D2-D3 ");
+    lcdPosition(lcd,0,1);
+    lcdPrintf(lcd, "  D2-%s  D3-%s", d2, d3);
+}
+
+void screen_4(){
+    lcdClear(lcd);
+    lcdPuts(lcd, " Sensores D4-D6 ");
+    lcdPosition(lcd,0,1);
+    lcdPrintf(lcd, "D4-%s D5-%s D6-%s", d4, d5, d6);
+}
+
+void screen_5(){
+    lcdClear(lcd);
+    lcdPuts(lcd, "      LED       ");
+    lcdPosition(lcd,0,1);
+    lcdPrintf(lcd, "        %s", led);
+}
+
+void screen_6(){
+    lcdClear(lcd);
+    lcdPuts(lcd, "Intervalo (s)");
+    lcdPosition(lcd,0,1);
+    lcdPrintf(lcd, "  %d", tempo);
+}
 
 void *screen_manager() {
     int b1 = 0, b2 = 0, b3 = 0;
@@ -65,61 +109,43 @@ void *screen_manager() {
         
         if(b1 == LOW) {
             delay(200);
-            if (screen <= 4){
+            if (screen <= 5){
                 screen++;
             }
             else{
                 screen = 1;
             }
             if (screen == 1){
-                lcdClear(lcd);
-                lcdPuts(lcd, "   Sensor A0    ");
-                lcdPosition(lcd,0,1);
-                lcdPrintf(lcd, "      %sV     ", voltage);
+                screen_1();
             }
             else if (screen == 2){
-                lcdClear(lcd);
-                lcdPuts(lcd, " Sensores D0-D1 ");
-                lcdPosition(lcd,0,1);
-                lcdPrintf(lcd, "  D0-%s  D1-%s", d0, d1);
+                screen_2();
             }
             else if (screen == 3){
-                lcdClear(lcd);
-                lcdPuts(lcd, " Sensores D2-D3 ");
-                lcdPosition(lcd,0,1);
-                lcdPrintf(lcd, "  D2-%s  D3-%s", d2, d3);
+                screen_3();
             }
             else if (screen == 4){
-                lcdClear(lcd);
-                lcdPuts(lcd, " Sensores D4-D6 ");
-                lcdPosition(lcd,0,1);
-                lcdPrintf(lcd, "D4-%s D5-%s D6-%s", d4, d5, d6);
+                screen_4();
             }
             else if (screen == 5){
-                lcdClear(lcd);
-                lcdPuts(lcd, "Intervalo (s)");
-                lcdPosition(lcd,0,1);
-                lcdPrintf(lcd, "  %d", tempo);
+                screen_5();
+            }
+            else if (screen == 6){
+                screen_6();
             }
         }
 
-        if (screen == 5){
+        if (screen == 6){
             
             if (b2 == LOW){
                 delay(200);
                 if (tempo <= 55){
                     tempo = tempo + 5;
-                    lcdClear(lcd);
-                    lcdPuts(lcd, "Intervalo (s)");
-                    lcdPosition(lcd,0,1);
-                    lcdPrintf(lcd, "  %d", tempo);
+                    screen_6();
                 }
                 else{
                     tempo = 5;
-                    lcdClear(lcd);
-                    lcdPuts(lcd, "Intervalo (s)");
-                    lcdPosition(lcd,0,1);
-                    lcdPrintf(lcd, "  %d", tempo);
+                    screen_6();
                 }
             }
             
@@ -128,35 +154,37 @@ void *screen_manager() {
                 char timeConv[10];
                 sprintf(timeConv, "%d", tempo);
                 publish(client, "TIME", timeConv);
+                publish(client, "SBC/TIME", timeConv);
             }
         }
 
+        else if (screen == 5){
+            
+            if (b2 == LOW){
+                delay(200);
+                if(strcmp(led, "ON") == 0){
+                    publish(client, "LED", led);
+                }
+                else{                    
+                    publish(client, "LED", led);
+                }
+            }           
+        }
+
         else if(flag == 1 && screen == 1){
-            lcdClear(lcd);
-            lcdPuts(lcd, "   Sensor A0    ");
-            lcdPosition(lcd,0,1);
-            lcdPrintf(lcd, "      %sV     ", voltage);
+            screen_1();
             flag = 0;
         }
         else if(flag == 1 && screen == 2){
-            lcdClear(lcd);
-            lcdPuts(lcd, " Sensores D0-D1 ");
-            lcdPosition(lcd,0,1);
-            lcdPrintf(lcd, "  D0-%s  D1-%s", d0, d1);
+            screen_2();
             flag = 0;
         }
         else if(flag == 1 && screen == 3){
-            lcdClear(lcd);
-            lcdPuts(lcd, " Sensores D2-D3 ");
-            lcdPosition(lcd,0,1);
-            lcdPrintf(lcd, "  D2-%s  D3-%s", d2, d3);
+            screen_3();
             flag = 0;
         }
         else if(flag == 1 && screen == 4){
-            lcdClear(lcd);
-            lcdPuts(lcd, " Sensores D4-D6 ");
-            lcdPosition(lcd,0,1);
-            lcdPrintf(lcd, "D4-%s D5-%s D6-%s", d4, d5, d6);
+            screen_4();
             flag = 0;
         }
     }
@@ -200,28 +228,11 @@ int main(){
     MQTTClient_subscribe(client, "D4", 2);
     MQTTClient_subscribe(client, "D5", 2);
     MQTTClient_subscribe(client, "D6", 2);
+    MQTTClient_subscribe(client, "LEDANS", 2);
     MQTTClient_subscribe(client, "SBC/TIME", 2);
 
     while(1){
         
-
-/*
-        if(screen == 5){
-            if(isPressed(BUTTON_2)) {
-                
-                if (tempo <= 55){
-                    tempo = tempo + 5;
-                }else{
-                    tempo = 5;
-                }
-                printf("%d", tempo);
-            }else if (isPressed(BUTTON_3)){
-                //publish(client, "TIME", payload);
-                //publish(client, "SBC/TIME", payload);
-                printf("%d", tempo);
-            }
-        }
-        */
     }
 }
 
@@ -239,20 +250,23 @@ void publish(MQTTClient client, char* topic, char* payload) {
 
 int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
     char* payload = message->payload;
-    /*
+    
     if(strcmp(topicName, "SBC/TIME") == 0){
         publish(client, "TIME", payload);
-        strcpy(time, payload);
+        tempo = atoi(payload);
+        screen_6();
     }
-    */
+    
     if(strcmp(topicName, "SBC/LED") == 0){
         publish(client, "LED", payload);
         strcpy(voltage, payload);
     }
+
     else if(strcmp(topicName, "VOLTAGE") == 0){
         publish(client, "SBC/VOLTAGE", payload);
         strcpy(voltage, payload);
     }
+
     else if(strcmp(topicName, "D0") == 0){
         publish(client, "SBC/D0", payload);
         strcpy(d0, payload);
@@ -261,6 +275,11 @@ int on_message(void *context, char *topicName, int topicLen, MQTTClient_message 
         publish(client, "SBC/D1", payload);
         strcpy(d1, payload);
         flag = 1;
+    }
+
+    else if(strcmp(topicName, "LEDANS") == 0){
+        strcpy(led, payload);
+        screen_5();        
     }
 
     MQTTClient_freeMessage(&message);

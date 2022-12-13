@@ -40,6 +40,31 @@ void publishTopic(){
   char d1valueConv[1];
   sprintf(d1valueConv, "%d", d1Value);
   client.publish("D1", d1valueConv);
+
+  int d2Value = digitalRead(D2);
+  char d2valueConv[1];
+  sprintf(d2valueConv, "%d", d2Value);
+  client.publish("D2", d2valueConv);
+
+  int d3Value = digitalRead(D3);
+  char d3valueConv[1];
+  sprintf(d3valueConv, "%d", d3Value);
+  client.publish("D3", d3valueConv);
+
+  int d4Value = digitalRead(D4);
+  char d4valueConv[1];
+  sprintf(d4valueConv, "%d", d4Value);
+  client.publish("D4", d4valueConv);
+
+  int d5Value = digitalRead(D5);
+  char d5valueConv[1];
+  sprintf(d5valueConv, "%d", d5Value);
+  client.publish("D5", d5valueConv);
+
+  int d6Value = digitalRead(D6);
+  char d6valueConv[1];
+  sprintf(d6valueConv, "%d", d6Value);
+  client.publish("D6", d6valueConv);
 }
 
 TimedAction proc_aux = TimedAction(2000, publishTopic);
@@ -53,6 +78,22 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
     tempo = atoi(aux);
     proc_aux.setInterval(tempo*1000);
+  }
+  else if(strcmp(topic,"LED") == 0){
+    char aux[10];
+    
+    for (int i=0;i<length;i++) {
+      aux[i] = (char)payload[i];
+    }
+    if (strcmp(aux,"OFF") == 0){
+      digitalWrite(LED_BUILTIN, 0);
+      client.publish("LEDANS", "ON");
+
+    }
+    else if(strcmp(aux,"ON") == 0){
+      digitalWrite(LED_BUILTIN, 1); 
+      client.publish("LEDANS", "OFF");
+    }
   }
 }
 
@@ -113,6 +154,7 @@ void reconnect_MQTT(){
     Serial.println("connected");
     client.publish("outTopic", "hello world");
     client.subscribe("TIME");
+    client.subscribe("LED");
   } else {
     Serial.print("failed, rc=");
     Serial.print(client.state());
@@ -122,6 +164,7 @@ void reconnect_MQTT(){
 }
 
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
   connectWifi_OTA();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
