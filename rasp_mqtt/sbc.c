@@ -37,6 +37,7 @@ char d5[10] = "0";
 char d6[10] = "0";
 char led[10] = "OFF";
 int tempo = 5;
+int status_con = 2;
 
 int flag = 0;
 int screen = 0;
@@ -100,6 +101,21 @@ void screen_6(){
     lcdPrintf(lcd, "  %d", tempo);
 }
 
+void screen_7(){
+    if(status_con == 1 || status_con == 2){
+        lcdClear(lcd);
+        lcdPuts(lcd, "   Connection   ");
+        lcdPosition(lcd,0,1);
+        lcdPuts(lcd, "     ONLINE     ");
+    }    
+    else{
+        lcdClear(lcd);
+        lcdPuts(lcd, "   Connection   ");
+        lcdPosition(lcd,0,1);
+        lcdPuts(lcd, "    OFFLINE     ");
+    }
+}
+
 void *screen_manager() {
     int b1 = 0, b2 = 0, b3 = 0;
     while(1){
@@ -109,7 +125,7 @@ void *screen_manager() {
         
         if(b1 == LOW) {
             delay(200);
-            if (screen <= 5){
+            if (screen <= 6){
                 screen++;
             }
             else{
@@ -132,6 +148,9 @@ void *screen_manager() {
             }
             else if (screen == 6){
                 screen_6();
+            }
+            else if (screen == 7){
+                screen_7();
             }
         }
 
@@ -191,6 +210,23 @@ void *screen_manager() {
     pthread_exit(NULL);
 }
 
+void *send_connection(){
+    while(1){
+        publish(client, "NODESTATUS", "CON");
+        delay(10000);
+        if(status_con == 1){
+            status_con = 2;
+        }
+        else{
+            status_con = 0;
+        }
+        if(screen == 7){
+            screen_7();
+        }
+    }
+    pthread_exit(NULL);
+}
+
 int main(){
     
     wiringPiSetup();
@@ -200,8 +236,9 @@ int main(){
 	pinMode(BUTTON_2,INPUT);
 	pinMode(BUTTON_3,INPUT);
 
-    pthread_t interrupt;
+    pthread_t interrupt, statust;
     pthread_create(&interrupt, NULL, screen_manager, NULL);
+    pthread_create(&statust, NULL, send_connection, NULL);
 
     write_2line("    IoT_MQTT    ", "    MI - SD     ");
 
@@ -230,6 +267,7 @@ int main(){
     MQTTClient_subscribe(client, "D6", 2);
     MQTTClient_subscribe(client, "LEDANS", 2);
     MQTTClient_subscribe(client, "SBC/TIME", 2);
+    MQTTClient_subscribe(client, "STATUSCON", 2);
 
     while(1){
         
@@ -254,12 +292,14 @@ int on_message(void *context, char *topicName, int topicLen, MQTTClient_message 
     if(strcmp(topicName, "SBC/TIME") == 0){
         publish(client, "TIME", payload);
         tempo = atoi(payload);
-        screen_6();
+        if(screen == 6){
+            screen_6();
+        }
+        
     }
     
     if(strcmp(topicName, "SBC/LED") == 0){
         publish(client, "LED", payload);
-        strcpy(voltage, payload);
     }
 
     else if(strcmp(topicName, "VOLTAGE") == 0){
@@ -278,8 +318,15 @@ int on_message(void *context, char *topicName, int topicLen, MQTTClient_message 
     }
 
     else if(strcmp(topicName, "LEDANS") == 0){
-        strcpy(led, payload);
-        screen_5();        
+        publish(client, "APP/LED", payload);
+        strcpy(led, payload);        
+        if (screen == 5){
+            screen_5();  
+        }        
+    }
+
+    else if(strcmp(topicName, "STATUSCON") == 0){
+        status_con = 1;  
     }
 
     MQTTClient_freeMessage(&message);

@@ -79,6 +79,8 @@
             Digitais:
                 id: sensor_digital
             Led:
+                id: led
+                led_icon: 'led-off'
             Time:
             MDBoxLayout:
                 padding: ['40dp', '10dp', '40dp', '15dp']
@@ -93,6 +95,8 @@
     width:'245dp'
     radius: dp(8)
     pos_hint: {'center_x': 0.836,'center_y': 0.595}
+    led_icon: ''
+    activity: False
     MDBoxLayout:
         orientation: 'vertical'
         size_hint_y: .2
@@ -106,17 +110,20 @@
     MDFloatLayout:
 
         MDIcon:
-            id: led_icon
-            icon: 'led-off'
+            icon: root.led_icon
             color: '#673AB7'
             adaptive_size: True
             pos_hint: {"center_x": .5, "center_y": .67}
             allow_selection: True
             font_size: '100sp' 
         
-        MDSwitch:
+        MDRoundFlatButton:
+            text: "Turn"
+            size_hint_x: .6
             pos_hint: {'center_x': .5, 'center_y': .15}
-            on_active: root.on_checkbox_active(*args)
+            theme_text_color: 'Custom'
+            text_color: '#673AB7'
+            on_release: root.set_led()
 
 <Time>:
     radius: dp(8)

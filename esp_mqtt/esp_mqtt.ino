@@ -95,6 +95,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
       client.publish("LEDANS", "OFF");
     }
   }
+  else if(strcmp(topic,"NODESTATUS") == 0){
+    client.publish("STATUSCON", "CON");
+  }
 }
 
 void connectWifi_OTA(){
@@ -155,6 +158,7 @@ void reconnect_MQTT(){
     client.publish("outTopic", "hello world");
     client.subscribe("TIME");
     client.subscribe("LED");
+    client.subscribe("NODESTATUS");
   } else {
     Serial.print("failed, rc=");
     Serial.print(client.state());

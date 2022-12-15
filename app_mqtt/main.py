@@ -71,11 +71,11 @@ class DummyScreen(MDScreen):
 class ConScreen(MDScreen):
     
     def on_enter(self, *args):
-        self.ids.mqtt.text = "10.0.0.101"
+        self.ids.mqtt.text = "broker.emqx.io"
         self.ids.porta.text = "1883"
         self.ids.cli.text = "Desktop"
-        self.ids.user.text = "aluno"
-        self.ids.password.text = '@luno*123'
+        self.ids.user.text = ""
+        self.ids.password.text = ""
     
     def connect_broker(self):
         global client
@@ -109,6 +109,7 @@ class TopicScreen(MDScreen):
         client.subscribe('SBC/D4')
         client.subscribe('SBC/D5')
         client.subscribe('SBC/D6')
+        client.subscribe('APP/LED')
         client.on_message = self.on_message
         thread.start_new_thread(self.subscribe_loop, ())
     
@@ -221,11 +222,20 @@ class TopicScreen(MDScreen):
                 if (msg == '0'):
                     self.ids.sensor_digital.color_d6 = '#d92222'
                 else:
-                    self.ids.sensor_digital.color_d6 = '#673AB7'                   
+                    self.ids.sensor_digital.color_d6 = '#673AB7' 
+        if message.topic == 'APP/LED':
+            if(msg == 'ON'):
+                self.ids.led.led_icon = 'led-on'
+                self.ids.led.activity = True
+                print(self.ids.led.activity)
+            else:
+                self.ids.led.led_icon = 'led-off'  
+                self.ids.led.activity = False   
+                print(self.ids.led.activity)   
 
     def subscribe_loop(self):
         client.loop_start()
-        time.sleep(100)
+        time.sleep(1000)
         client.loop_stop()
 
     def back_start(self):
@@ -254,13 +264,17 @@ class Time(MDCard):
         client.publish("SBC/TIME", self.ids.slider_time.value)
 
 class Led(MDCard):
-    def on_checkbox_active(self, checkbox, value):
-        if value:
-            self.ids.led_icon.icon = 'led-on'
-            client.publish('SBC/LED', 'on')
+    def set_led(self):
+        if self.activity:
+            self.led_icon = 'led-off'
+            client.publish('SBC/LED', 'OFF')
+            self.activity =  False
+            print(self.activity)
         else:
-            self.ids.led_icon.icon = 'led-off'
-            client.publish('SBC/LED', 'off')
+            self.led_icon = 'led-on'
+            client.publish('SBC/LED', 'ON')
+            self.activity =  True
+            print(self.activity)
 
 class TopicPub(MDCard):
     pass
