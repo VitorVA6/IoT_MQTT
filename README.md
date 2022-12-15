@@ -31,12 +31,13 @@
 <div id="introducao">
      <h1> Introdução </h1>
      <ul>
-	Para o problema 3, 
+	Diversos protocolos de comunicação vem sendo utilizados nos mais diversos tipos de projetos no mundo moderno, ainda mais após o interesse massivo pela Internet of Things (IOT). Com o íntuito da disciplina em nós fazer aprender a lidar com esses protocolos e saber como eles se adequam a nossa realidade, fomos apresentados ao MQTT, um protocolo que se caracteriza pela sua forma simples e eficiente de enviar e receber mensagens que se tornou muito popular em todo o mundo. Utilizando o MQTT para usar seu modelo de clientes que podem se inscrever em tópicos e assim receber e publicar informações, adaptamos o problema passado para que o mesmo possibilite a visualização das informações dos sensores para diferentes tipos de dispositivos que estejam conectados ao servidor central. 
      </ul>
 </div>
 <div id="recursos-utilizados">
     <h1>Recursos utilizados</h1>
     <ul>
+    Para trabalhar com o nodeMCU(ESP8266) foi utilizado o Arduino IDE , para os arquivos da interface remota (HTML,CSS,Javacript) e Raspberry PI Zero usamos o Visual studio code. São remanescentes do projeto anterior, o display lcd Hitachi HD44780U para a exibição dos dados, os botões para controle do intervalo de tempo e os sensores digitais simulados por um push button e o analógico por um potenciômetro, ambos conectados ao nodeMCU, informações sobre as bibliotecas e funções que tambem foram utilizadas no problema 2 podem ser lidas no repositório do mesmo, juntamente com as informações de como configurar a IDE para poder realizar a comunicação com o nodeMCU: -REP do problema 2-
   </ul>
 </div>
 
