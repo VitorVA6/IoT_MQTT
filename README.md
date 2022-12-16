@@ -232,7 +232,7 @@ Após a conexão ser feita, é exibida a segunda tela, onde por meios de cards o
 
 
 <div id="simulacao">
-<h1> Descrição e análise dos testes e simulações realizadas</h1> 
+<h1> 5. Descrição e análise dos testes e simulações realizadas</h1> 
 <ul>
 Para a elaboração do sistema foi necessário a execução de alguns testes pontuais, como nosso sistema é baseado no conceito de unicidade de dados, usamos o app para testagem final dos valores comparando com os valores exibidos na LCD da Rasp, os testes seguem sendo detalhados a seguir:
 </ul>
@@ -254,7 +254,7 @@ Para a elaboração do sistema foi necessário a execução de alguns testes pon
 </div>
 
 <div id="anexos">
-<h1> Materiais utilizados no desenvolvimento</h1> 
+<h1>6. Materiais utilizados no desenvolvimento</h1> 
 </div>
 
 &nbsp;&nbsp;&nbsp;[Paho MQTT](https://embarcados.com.br/paho-mqtt-em-c-no-linux-embarcado/)
