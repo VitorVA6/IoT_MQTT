@@ -117,7 +117,7 @@ class DummyScreen(MDScreen):
 class ConScreen(MDScreen):
     
     def on_enter(self, *args):
-        self.ids.mqtt.text = "broker.emqx.io"
+        self.ids.mqtt.text = "10.0.0.101"
         self.ids.porta.text = "1883"
         self.ids.cli.text = "Desktop"
         self.ids.user.text = ""
@@ -313,7 +313,7 @@ class Time(MDCard):
 
 class Led(MDCard):
     def set_led(self):
-        if self.activity:
+        if not self.activity:
             self.led_icon = 'led-off'
             client.publish('SBC/LED', 'OFF')
             self.activity =  False

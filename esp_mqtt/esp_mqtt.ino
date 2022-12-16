@@ -112,7 +112,7 @@ void connectWifi_OTA(){
     delay(5000);
     ESP.restart();}
 
-  ArduinoOTA.setHostname("ESP-10.0.0.107");
+  ArduinoOTA.setHostname("ESP-10.0.0.108");
 
   ArduinoOTA.onStart([]() {
     String type;
