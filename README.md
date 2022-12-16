@@ -79,19 +79,164 @@
     <ul>
     O projeto gira em torno da interação entre nodeMCU, interface remota e rasp atráves do Broker :
 	<div align="center">
-	<img src=https://user-images.githubusercontent.com/29680023/208174728-76f637f4-5d7c-4d3b-9b02-db2a9d896ca4.png width="900px" />
+	<img src=https://user-images.githubusercontent.com/29680023/208179943-381275b1-e11e-4091-bf24-39b55ba2ad57.png width="900px" />
 	</div>
     Em nosso projeto o display LCD presente na Raspberry exibe os dados recebidos pela nodeMCU através da UART e envia os dados referentes ao intervalo de atualização, tanto a rasp, a interface remota e a nodeMCU se conectam com o broker, inicialmente realizando uma inscricão e depois publicando/recebendo atualizações no tópico.
      </ul>
-     <h2>4.2  NodeMCU (ESP8266)</h2>
-     
+     <h2>4.2  Raspberry pi zero</h2>
+	<ul>
+	Como dito antes a Rapsberry PI utiliza seu display LCD para exibir os dados da NodeMCU, entre esses dados estão: Os valores dos sensores de D0 até D6, os dados do sensor analógico, estado da led, verificação da conexão e por fim a configuração do tempo. Os valores são exibidos de forma sequencial, e são alterados utilizando os botões (botão 1 para mudar a tela, botão 2 para incremento no tempo e botão, botão 3 para envio de atualizações).
+	</ul>
+	
+	void screen_1(){
+	    lcdClear(lcd);
+	    lcdPuts(lcd, "   Sensor A0    ");
+	    lcdPosition(lcd,0,1);
+	    lcdPrintf(lcd, "      %sV     ", voltage);
+	}
+
+	void screen_2(){
+	    lcdClear(lcd);
+	    lcdPuts(lcd, " Sensores D0-D1 ");
+	    lcdPosition(lcd,0,1);
+	    lcdPrintf(lcd, "  D0-%s  D1-%s", d0, d1);
+	}
+
+	void screen_3(){
+	    lcdClear(lcd);
+	    lcdPuts(lcd, " Sensores D2-D3 ");
+	    lcdPosition(lcd,0,1);
+	    lcdPrintf(lcd, "  D2-%s  D3-%s", d2, d3);
+	}
+
+	void screen_4(){
+	    lcdClear(lcd);
+	    lcdPuts(lcd, " Sensores D4-D6 ");
+	    lcdPosition(lcd,0,1);
+	    lcdPrintf(lcd, "D4-%s D5-%s D6-%s", d4, d5, d6);
+	}
+
+	void screen_5(){
+	    lcdClear(lcd);
+	    lcdPuts(lcd, "      LED       ");
+	    lcdPosition(lcd,0,1);
+	    lcdPrintf(lcd, "        %s", led);
+	}
+
+	void screen_6(){
+	    lcdClear(lcd);
+	    lcdPuts(lcd, "Intervalo (s)");
+	    lcdPosition(lcd,0,1);
+	    lcdPrintf(lcd, "  %d", tempo);
+	}
+
+	void screen_7(){
+	    if(status_con == 1 || status_con == 2){
+		lcdClear(lcd);
+		lcdPuts(lcd, "   Connection   ");
+		lcdPosition(lcd,0,1);
+		lcdPuts(lcd, "     ONLINE     ");
+	    }    
+	    else{
+		lcdClear(lcd);
+		lcdPuts(lcd, "   Connection   ");
+		lcdPosition(lcd,0,1);
+		lcdPuts(lcd, "    OFFLINE     ");
+	    }
+	}
+<ul>
+	O código acima é referente a visão de informações presentes no LCD, ao todo nos baseamos em mostrar 7 "telas" para organização de informações e cada uma das void screen são chamados em outro metodo a partir do incremento no Botão 1. 
+</ul>
+<h2>4.3  Node MCU</h2>
+	
+<ul>
+	O Node MCU permanece com as funções contidas no Projeto 2, porém como novidade implementamos a comunicação com o Broker:
+</ul>
+
+<ul>
+	Para a implementação do MQTT foi utilizada a biblioteca PubSubClient, criamos as variaveis onde estarão o endereço do servidor mqtt, junto com o úsuario, senha e por fim um objeto do tipo PubSubClient :
+</ul>
+	
+	const char* mqtt_server = "10.0.0.101";
+	const char *mqtt_username = "aluno";
+	const char *mqtt_password = "@luno*123";
+
+	WiFiClient espClient;
+	PubSubClient client(espClient);
+	
+<ul>
+	Após esse setup inicial, executaremos a função publishTopic, que após a conexão com o broker usando suas devidas credenciais, podemos usar o pubSubClient para realizar a comunicação com o broker. Podendo assim, escolher um tópico para se inscrever e publicar uma mensagem em seguida. Código do publishTopic:
+</ul>
+
+	  void publishTopic(){
+	  float valor = analogRead(A0)*(3.3/1023.0);
+	  char valorConv[4];
+	  sprintf(valorConv, "%.1f", valor);
+	  client.publish("VOLTAGE", valorConv);
+
+	  int d0Value = digitalRead(D0);
+	  char d0valueConv[1];
+	  sprintf(d0valueConv, "%d", d0Value);
+	  client.publish("D0", d0valueConv);
+
+	  int d1Value = digitalRead(D1);
+	  char d1valueConv[1];
+	  sprintf(d1valueConv, "%d", d1Value);
+	  client.publish("D1", d1valueConv);
+
+	  int d2Value = digitalRead(D2);
+	  char d2valueConv[1];
+	  sprintf(d2valueConv, "%d", d2Value);
+	  client.publish("D2", d2valueConv);
+
+	  int d3Value = digitalRead(D3);
+	  char d3valueConv[1];
+	  sprintf(d3valueConv, "%d", d3Value);
+	  client.publish("D3", d3valueConv);
+
+	  int d4Value = digitalRead(D4);
+	  char d4valueConv[1];
+	  sprintf(d4valueConv, "%d", d4Value);
+	  client.publish("D4", d4valueConv);
+
+	  int d5Value = digitalRead(D5);
+	  char d5valueConv[1];
+	  sprintf(d5valueConv, "%d", d5Value);
+	  client.publish("D5", d5valueConv);
+
+	  int d6Value = digitalRead(D6);
+	  char d6valueConv[1];
+	  sprintf(d6valueConv, "%d", d6Value);
+	  client.publish("D6", d6valueConv);
+	}
+	
+<h2>4.4 Interface remota</h2>
+<ul>
+	Para a criação da interface remota foi utilizada a linguagem de marcação Python para exibição do dados que foram enviados pela rasp.
+
+No arquivo main.py é onde se encontra a parte de exibição da interface remota, a mesma é dividida em 2 telas, a tela inicial é composta por 1 botão de conectar e 5 inputs, onde o úsuario deverá informar: O Broker, a porta, o nome do Úsuario, a Senha e por fim seu ID. 
+</ul>
+	<div align="center">
+	<img src=https://user-images.githubusercontent.com/29680023/208192821-1cb62be9-34fe-490d-8ba6-ac6870268412.jpeg width="800px" />
+	</div>
+<ul>
+Após a conexão ser feita, é exibida a segunda tela, onde por meios de cards o úsuario receberá as informações de cada sensor digital, sensor A0, estado da LED, o tempo de envio de informações, e as últimas 10 medições. Além da visualização o úsuario poderá aumentar ou diminuir o tempo de envio e ligar/desligar a led.
+</ul>
+	<div align="center">
+	<img src=https://user-images.githubusercontent.com/29680023/208193240-af1453c0-d8e1-4e62-8d43-e3663c79f85f.jpeg width="800px" />
+	</div>
 	
 </div>
 
 
 <div id="simulacao">
 <h1> Descrição e análise dos testes e simulações realizadas</h1> 
+<ul>
+	Para a elaboração do sistema foi necessário a execução de alguns testes pontuais sendo eles detalhados a seguir:
+
+	O primeiro teste
 	
+</ul>
 </div>
 
 <div id="anexos">
