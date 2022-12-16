@@ -29,77 +29,62 @@
 
 
 <div id="introducao">
-     <h1> Introdução </h1>
+     <h1>1. Introdução </h1>
      <ul>
-	Diversos protocolos de comunicação vem sendo utilizados nos mais diversos tipos de projetos no mundo moderno, ainda mais após o interesse massivo pela Internet of Things (IOT). Com o íntuito da disciplina em nós fazer aprender a lidar com esses protocolos e saber como eles se adequam a nossa realidade, fomos apresentados ao MQTT, um protocolo que se caracteriza pela sua forma simples e eficiente de enviar e receber mensagens que se tornou muito popular em todo o mundo. Utilizando o MQTT para usar seu modelo de clientes que podem se inscrever em tópicos e assim receber e publicar informações, adaptamos o problema passado para que o mesmo possibilite a visualização das informações dos sensores para diferentes tipos de dispositivos que estejam conectados ao servidor central. 
+	Diversos protocolos de comunicação vem sendo utilizados nos mais diversos tipos de projetos no mundo moderno, ainda mais após o interesse massivo pela Internet of Things (IOT). Com o íntuito da disciplina em nós fazer aprender a lidar com esses protocolos e saber como eles se adequam a nossa realidade, foi apresentado o protocolo MQTT, protocolo esse que se caracteriza pela sua forma simples e eficiente de enviar e receber mensagens que se tornou muito popular em todo o mundo. Utilizando o MQTT para usar seu modelo de clientes que podem se inscrever em tópicos e assim receber e publicar informações, adaptamos o problema passado para que o mesmo possibilite a visualização das informações dos sensores para diferentes tipos de dispositivos que estejam conectados ao servidor central. 
      </ul>
 </div>
 <div id="recursos-utilizados">
-    <h1>Recursos utilizados</h1>
+    <h1>2. Recursos utilizados</h1>
     <ul>
-    Para trabalhar com o nodeMCU(ESP8266) foi utilizado o Arduino IDE , para os arquivos da interface remota (HTML,CSS,Javacript) e Raspberry PI Zero usamos o Visual studio code. São remanescentes do projeto anterior, o display lcd Hitachi HD44780U para a exibição dos dados, os botões para controle do intervalo de tempo e os sensores digitais simulados por um push button e o analógico por um potenciômetro, ambos conectados ao nodeMCU, informações sobre as bibliotecas e funções que tambem foram utilizadas no problema 2 podem ser lidas no repositório do mesmo, juntamente com as informações de como configurar a IDE para poder realizar a comunicação com o nodeMCU: -REP do problema 2-
+    Para trabalhar com o nodeMCU(ESP8266) foi utilizado o Arduino IDE , para os arquivos da interface remota (Python) e Raspberry PI Zero usamos o Visual studio code. 
+    </ul>
+    <ul>
+    Permanecem do projeto anterior o mesmo display lcd Hitachi HD44780U para a exibição dos dados, os botões para controle do intervalo de tempo e os sensores digitais simulados por um push button e o analógico por um potenciômetro, ambos conectados ao nodeMCU. 
+    </ul>
+    <ul>
+    Para reaver as informações sobre funções e bibliotecas que também foram utilizadas no problema 2, deve-se acessar o seguinte repositório: https://github.com/VitorVA6/PBL2_SD.  
   </ul>
 </div>
 
 
 <div id="usar">
-    <h1>Como executar o projeto</h1> 
-    <h3>Rapsberry PI:</h3>
+    <h1>3. Como executar o projeto</h1> 
     <ul>
     Para iniciar a execução é necessário clonar o projeto da máquina que será usada. Para isso segue o passo a passo:
 		
-	$ https://github.com/VitorVA6/PBL2_SD
-• Transfira os seguintes arquivos baixados para o Raspberry Pi Zero;
+	$https://github.com/VitorVA6/IoT_MQTT
+• Transfira a seguinte pasta baixada para o Raspberry Pi Zero;
 
-	clear.s
-	writeLCD.s
-	initLCD.s
-	main.c
-	makefile
-	mapping.s
+	rasp_mqtt
+	
+• Para a parte destinada ao NodeMCU deve ser compilada usando o Arduino, logo deve-se baixar seguinte pasta;
+	
+	esp_mqtt
+	
+• Para o executável baixe os arquivos presentes na pasta app_mqtt e execute o Main em uma IDE de sua preferência;
 
 • Por fim, execute os seguintes comandos:
-</ul>
-
+	
 	$ make
 	$ sudo ./main
-  
-<h3>Node MCU:</h3>
-    <ul>
-    Para tudo funcionar bem o ambiente deve-se estar minimamente preparado, com todos os recursos citados na seção de recursos utilizados em mãos em conjunto com os códigos presentes neste repositório. Além disso é necessário a inserção de alguns dados em linhas de código específicas, pois imaginando-se o cenário de upload via wifi o código presente nos trechos do ArduinoOTA devem ficar desse modo:
-    </ul>
-    
-    const char* ssid = "SSID-DA-REDE-A-SER-UTILIZADA";
-    const char* password = "SENHA-DA-REDE-A-SER-UTILIZADA";
-    
-    void setup() {
-	  Serial.begin(9600);
-	  Serial.println("Booting");
-	  WiFi.mode(WIFI_STA);
-	  WiFi.begin(ssid, password);
-	  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-	    Serial.println("Connection Failed! Rebooting...");
-	    delay(5000);
-	    ESP.restart();
-	  }
 
-	  ArduinoOTA.setHostname("ENDEREÇO-DA-ESP-A-SER-UTILIZADA");
+</ul>
 
-	   ArduinoOTA.onStart([]() {
-	    String type;
-	    if (ArduinoOTA.getCommand() == U_FLASH) {
-	      type = "sketch";
-	    } else { // U_FS
-	      type = "filesystem";
-	    }
-
-	  ArduinoOTA.begin();
-    
+      
 </div>
 <div id="desenvolvimento">
-    <h1>Descrição em alto nível do sistema proposto</h1> 
+    <h1>4. Descrição em alto nível do sistema proposto</h1> 
+    <h2>4.1 Fluxo de funcionamento do projeto</h2> 
     <ul>
-     </ul>	
+    O projeto gira em torno da interação entre nodeMCU, interface remota e rasp atráves do Broker :
+	<div align="center">
+	<img src=https://user-images.githubusercontent.com/29680023/208174728-76f637f4-5d7c-4d3b-9b02-db2a9d896ca4.png width="900px" />
+	</div>
+    Em nosso projeto o display LCD presente na Raspberry exibe os dados recebidos pela nodeMCU através da UART e envia os dados referentes ao intervalo de atualização, tanto a rasp, a interface remota e a nodeMCU se conectam com o broker, inicialmente realizando uma inscricão e depois publicando/recebendo atualizações no tópico.
+     </ul>
+     <h2>4.2  NodeMCU (ESP8266)</h2>
+     
 	
 </div>
 
