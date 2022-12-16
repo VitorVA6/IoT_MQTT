@@ -9,4 +9,6 @@ port = 1883
 client = mqtt.Client("sersor")
 client.connect(broker, port)
 
-client.publish("APP/LED", "ON")
+while True:
+    client.publish("SBC/VOLTAGE", "2")
+    time.sleep(5)

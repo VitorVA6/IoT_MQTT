@@ -48,17 +48,6 @@ void write_2line(char linha1[], char linha2[]);
 void publish(MQTTClient client, char* topic, char* payload);
 int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message);
 
-
-/*
-1 - sensor analógico
-2 - sensores digitais
-3 - sensores digitais p2
-4 - sensores digitais p3
-5 - LED
-6 - configuração de tempo
-7 - status da conexão
-*/
-
 void screen_1(){
     lcdClear(lcd);
     lcdPuts(lcd, "   Sensor A0    ");
@@ -173,7 +162,6 @@ void *screen_manager() {
                 char timeConv[10];
                 sprintf(timeConv, "%d", tempo);
                 publish(client, "TIME", timeConv);
-                publish(client, "SBC/TIME", timeConv);
             }
         }
 
@@ -181,12 +169,9 @@ void *screen_manager() {
             
             if (b2 == LOW){
                 delay(200);
-                if(strcmp(led, "ON") == 0){
-                    publish(client, "LED", led);
-                }
-                else{                    
-                    publish(client, "LED", led);
-                }
+               
+                publish(client, "LED", led);
+                
             }           
         }
 
@@ -244,7 +229,7 @@ int main(){
 
     int rc;
     MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
-    conn_opts.keepAliveInterval = 60;
+    conn_opts.keepAliveInterval = 1000;
 	conn_opts.cleansession = 1;
     conn_opts.username = USERNAME;
     conn_opts.password = PASSWORD;
@@ -266,7 +251,9 @@ int main(){
     MQTTClient_subscribe(client, "D5", 2);
     MQTTClient_subscribe(client, "D6", 2);
     MQTTClient_subscribe(client, "LEDANS", 2);
+    MQTTClient_subscribe(client, "TIMEANS", 2);
     MQTTClient_subscribe(client, "SBC/TIME", 2);
+    MQTTClient_subscribe(client, "SBC/LED", 2);
     MQTTClient_subscribe(client, "STATUSCON", 2);
 
     while(1){
@@ -280,7 +267,7 @@ void publish(MQTTClient client, char* topic, char* payload) {
     pubmsg.payload = payload;
     pubmsg.payloadlen = strlen(pubmsg.payload);
     pubmsg.qos = QOS;
-    pubmsg.retained = 0;
+    pubmsg.retained = 1;
     MQTTClient_deliveryToken token;
     MQTTClient_publishMessage(client, topic, &pubmsg, &token);
     MQTTClient_waitForCompletion(client, token, 1000L);
@@ -291,11 +278,6 @@ int on_message(void *context, char *topicName, int topicLen, MQTTClient_message 
     
     if(strcmp(topicName, "SBC/TIME") == 0){
         publish(client, "TIME", payload);
-        tempo = atoi(payload);
-        if(screen == 6){
-            screen_6();
-        }
-        
     }
     
     if(strcmp(topicName, "SBC/LED") == 0){
@@ -318,11 +300,21 @@ int on_message(void *context, char *topicName, int topicLen, MQTTClient_message 
     }
 
     else if(strcmp(topicName, "LEDANS") == 0){
+        puts(payload);
         publish(client, "APP/LED", payload);
         strcpy(led, payload);        
         if (screen == 5){
             screen_5();  
         }        
+    }
+
+    else if(strcmp(topicName, "TIMEANS") == 0){
+        puts(payload);
+        publish(client, "APP/TIME", payload);
+        tempo = atoi(payload);
+        if(screen == 6){
+            screen_6();
+        }    
     }
 
     else if(strcmp(topicName, "STATUSCON") == 0){

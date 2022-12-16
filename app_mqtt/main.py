@@ -16,6 +16,7 @@ from kivy.uix.screenmanager import ScreenManager, NoTransition, SlideTransition
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
+from kivy.properties import ObjectProperty
 import numpy as np
 from scipy.interpolate import make_interp_spline
 import matplotlib
@@ -23,37 +24,82 @@ matplotlib.use("module://kivy.garden.matplotlib.backend_kivy")
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 
-plt.style.use('grayscale')
-fig = plt.figure()
-fig.patch.set_alpha(0)
-
-ax = plt.axes()
-ax.patch.set_alpha(0)
-
-y = np.array([2.1, 2.3, 1.2, 1.9, 2, 0.7, 2.7, 2.1, 1.3, 0.6])
-x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-ax.grid(color='#673AB7', linestyle='-', linewidth=.5, alpha = .3)
-xlabels = [ '10th', '9th', '8th', '7th', '6th', '5th', '4th', '3th', '2th', '1th']
-
-xy_spline = make_interp_spline(x, y)
-x1 = np.linspace(x.min(), x.max(), 500)
-y1 = xy_spline(x1)
-
-plt.plot(x1, y1, color = '#673AB7')
-plt.scatter(x, y, color = '#673AB7')
-plt.xticks(np.arange(min(x), max(x)+1, 1.0))
-plt.tick_params('both', colors = '#673AB7', bottom = False, left = False)
-plt.grid(True)
-plt.tight_layout()
-plt.gca().spines['top'].set_visible(False)
-plt.gca().spines['right'].set_visible(False)
-plt.gca().spines['left'].set_visible(False)
-plt.gca().spines['bottom'].set_visible(False)
-plt.gca().set_xticklabels(xlabels)
-
 client = 0
-topics = {'analogico':[], 'd0':[], 'd1':[], 'd2':[], 'd3':[], 'd4':[], 'd5':[], 'd6':[]}
+topics = {'analogico':[1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 'd0':[], 'd1':[], 'd2':[], 'd3':[], 'd4':[], 'd5':[], 'd6':[]}
 actual_plot = None
+
+class Graphics(MDBoxLayout):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        plt.style.use('grayscale')
+        fig = plt.figure()
+        fig.patch.set_alpha(0)
+
+        ax = plt.axes()
+        ax.patch.set_alpha(0)
+
+        y = np.array(topics['analogico'])
+        x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+        ax.grid(color='#673AB7', linestyle='-', linewidth=.5, alpha = .3)
+        xlabels = [ '10th', '9th', '8th', '7th', '6th', '5th', '4th', '3th', '2th', '1th']
+
+        xy_spline = make_interp_spline(x, y)
+        x1 = np.linspace(x.min(), x.max(), 500)
+        y1 = xy_spline(x1)
+
+        plt.plot(x1, y1, color = '#673AB7')
+        plt.scatter(x, y, color = '#673AB7')
+        plt.xticks(np.arange(min(x), max(x)+1, 1.0))
+        plt.tick_params('both', colors = '#673AB7', bottom = False, left = False)
+        plt.grid(True)
+        plt.tight_layout()
+        plt.gca().spines['top'].set_visible(False)
+        plt.gca().spines['right'].set_visible(False)
+        plt.gca().spines['left'].set_visible(False)
+        plt.gca().spines['bottom'].set_visible(False)
+        plt.gca().set_xticklabels(xlabels)
+        self.gcf1 = plt.gcf()
+        self.add_widget(FigureCanvasKivyAgg(self.gcf1))   
+
+    def update_graph(self):
+        plt.cla()
+        self.clear_widgets()     
+
+        plt.style.use('grayscale')
+        fig = plt.figure()
+        fig.patch.set_alpha(0)
+
+        ax = plt.axes()
+        ax.patch.set_alpha(0)
+
+        y = np.array(topics['analogico'])
+        x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+        ax.grid(color='#673AB7', linestyle='-', linewidth=.5, alpha = .3)
+        xlabels = [ '10th', '9th', '8th', '7th', '6th', '5th', '4th', '3th', '2th', '1th']
+
+        xy_spline = make_interp_spline(x, y)
+        x1 = np.linspace(x.min(), x.max(), 500)
+        y1 = xy_spline(x1)
+
+        plt.plot(x1, y1, color = '#673AB7')
+        plt.scatter(x, y, color = '#673AB7')
+        plt.xticks(np.arange(min(x), max(x)+1, 1.0))
+        plt.tick_params('both', colors = '#673AB7', bottom = False, left = False)
+        plt.grid(True)
+        plt.tight_layout()
+        plt.gca().spines['top'].set_visible(False)
+        plt.gca().spines['right'].set_visible(False)
+        plt.gca().spines['left'].set_visible(False)
+        plt.gca().spines['bottom'].set_visible(False)
+        plt.gca().set_xticklabels(xlabels)
+        self.gcf1 = plt.gcf()
+        self.add_widget(FigureCanvasKivyAgg(self.gcf1))   
+
+graf = Graphics()
 
 class Manager(ScreenManager):
     pass
@@ -110,8 +156,10 @@ class TopicScreen(MDScreen):
         client.subscribe('SBC/D5')
         client.subscribe('SBC/D6')
         client.subscribe('APP/LED')
+        client.subscribe('APP/TIME')
         client.on_message = self.on_message
         thread.start_new_thread(self.subscribe_loop, ())
+        self.ids.g.add_widget(graf)
     
     def on_message(self, client, userdata, message):
         global actual_plot
@@ -124,7 +172,10 @@ class TopicScreen(MDScreen):
             else:
                 del(topics['analogico'][0])
                 topics['analogico'].append(float(msg))
-                self.ids.sensor_an.text_sensor = msg        
+                self.ids.sensor_an.text_sensor = msg    
+            print(topics['analogico'])    
+            graf.update_graph()        
+              
         if message.topic == 'SBC/D0':
             if(len(topics['d0']) < 10 ):
                 topics['d0'].append(msg)
@@ -232,6 +283,8 @@ class TopicScreen(MDScreen):
                 self.ids.led.led_icon = 'led-off'  
                 self.ids.led.activity = False   
                 print(self.ids.led.activity)   
+        if message.topic == 'APP/TIME':
+            self.ids.time.value_msg = msg
 
     def subscribe_loop(self):
         client.loop_start()
@@ -241,11 +294,6 @@ class TopicScreen(MDScreen):
     def back_start(self):
         client.disconnect()
         MDApp.get_running_app().root.current = "connect"
-
-    def create_graph(self):
-        global actual_plot
-        actual_plot = Graphics()
-        self.add_widget(actual_plot)
 
 class TopCard(MDCard):
     
@@ -279,11 +327,6 @@ class Led(MDCard):
 class TopicPub(MDCard):
     pass
 
-class Graphics(MDBoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-            
-        self.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
 class Card_graph(MDCard):
     pass

@@ -78,6 +78,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
     tempo = atoi(aux);
     proc_aux.setInterval(tempo*1000);
+    client.publish("TIMEANS", aux, true);
   }
   else if(strcmp(topic,"LED") == 0){
     char aux[10];
@@ -111,7 +112,7 @@ void connectWifi_OTA(){
     delay(5000);
     ESP.restart();}
 
-  ArduinoOTA.setHostname("ESP-10.0.0.108");
+  ArduinoOTA.setHostname("ESP-10.0.0.107");
 
   ArduinoOTA.onStart([]() {
     String type;
