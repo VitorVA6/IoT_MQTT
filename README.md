@@ -31,7 +31,7 @@
 <div id="introducao">
      <h1>1. Introdução </h1>
      <ul>
-	Diversos protocolos de comunicação vem sendo utilizados nos mais diversos tipos de projetos no mundo moderno, ainda mais após o interesse massivo pela Internet of Things (IOT). Com o íntuito da disciplina em nós fazer aprender a lidar com esses protocolos e saber como eles se adequam a nossa realidade, foi apresentado o protocolo MQTT, protocolo esse que se caracteriza pela sua forma simples e eficiente de enviar e receber mensagens que se tornou muito popular em todo o mundo. Utilizando o MQTT para usar seu modelo de clientes que podem se inscrever em tópicos e assim receber e publicar informações, adaptamos o problema passado para que o mesmo possibilite a visualização das informações dos sensores para diferentes tipos de dispositivos que estejam conectados ao servidor central. 
+	Diversos protocolos de comunicação vêm sendo utilizados nos mais diversos tipos de projetos no mundo moderno, ainda mais após o interesse massivo pela Internet of Things (IOT). Com o intuito da disciplina em melhorar o nosso entendimento em lidar com essas ferramentas e saber como elas se adequam a nossa realidade, foi apresentado o protocolo MQTT, protocolo esse que se caracteriza pela sua forma simples e eficiente de enviar e receber mensagens que se tornou muito popular em todo o mundo. Utilizando o MQTT para usar seu modelo de clientes que podem se inscrever em tópicos e assim receber e publicar informações, adaptamos o problema passado para que o mesmo possibilite a visualização das informações dos sensores para diferentes tipos de dispositivos que estejam conectados ao servidor central. 
      </ul>
 </div>
 <div id="recursos-utilizados">
@@ -77,15 +77,15 @@
     <h1>4. Descrição em alto nível do sistema proposto</h1> 
     <h2>4.1 Fluxo de funcionamento do projeto</h2> 
     <ul>
-    O projeto gira em torno da interação entre nodeMCU, interface remota e rasp atráves do Broker :
+    O projeto gira em torno da interação entre nodeMCU, interface remota e rasp através do Broker:
 	<div align="center">
 	<img src=https://user-images.githubusercontent.com/29680023/208179943-381275b1-e11e-4091-bf24-39b55ba2ad57.png width="900px" />
 	</div>
-    Em nosso projeto o display LCD presente na Raspberry exibe os dados recebidos pela nodeMCU através da UART e envia os dados referentes ao intervalo de atualização, tanto a rasp, a interface remota e a nodeMCU se conectam com o broker, inicialmente realizando uma inscricão e depois publicando/recebendo atualizações no tópico.
+    Em nosso projeto o display LCD presente na Raspberry exibe os dados recebidos pela nodeMCU através da UART e envia os dados referentes ao intervalo de atualização, tanto a rasp, a interface remota e a nodeMCU se conectam com o broker, inicialmente realizando uma inscrição e depois publicando/recebendo atualizações no tópico.
      </ul>
      <h2>4.2  Raspberry pi zero</h2>
 	<ul>
-	Como dito antes a Rapsberry PI utiliza seu display LCD para exibir os dados da NodeMCU, entre esses dados estão: Os valores dos sensores de D0 até D6, os dados do sensor analógico, estado da led, verificação da conexão e por fim a configuração do tempo. Os valores são exibidos de forma sequencial, e são alterados utilizando os botões (botão 1 para mudar a tela, botão 2 para incremento no tempo e botão, botão 3 para envio de atualizações).
+	Como dito anteriormente a Rapsberry PI utiliza seu display LCD para exibir os dados da NodeMCU, entre esses dados estão: Os valores dos sensores de D0 até D6, os dados do sensor analógico, estado da led, verificação da conexão e por fim a configuração do tempo. Os valores são exibidos de forma sequencial, e são alterados utilizando os botões (botão 1 para mudar a tela, botão 2 para incremento no tempo e botão, botão 3 para envio de atualizações).
 	</ul>
 	
 	void screen_1(){
@@ -145,7 +145,7 @@
 	    }
 	}
 <ul>
-	O código acima é referente a visão de informações presentes no LCD, ao todo nos baseamos em mostrar 7 "telas" para organização de informações e cada uma das void screen são chamados em outro metodo a partir do incremento no Botão 1. 
+	O código acima é referente a visão de informações presentes no LCD, ao todo nos baseamos em mostrar 7 "telas" para organização de informações e cada uma das void screen são chamados em outro método a partir do incremento no Botão 1. 
 </ul>
 <h2>4.3  Node MCU</h2>
 	
@@ -154,7 +154,7 @@
 </ul>
 
 <ul>
-	Para a implementação do MQTT foi utilizada a biblioteca PubSubClient, criamos as variaveis onde estarão o endereço do servidor mqtt, junto com o úsuario, senha e por fim um objeto do tipo PubSubClient :
+	Para a implementação do MQTT foi utilizada a biblioteca PubSubClient, criamos as variáveis onde estarão o endereço do servidor mqtt, junto com o usuário, senha e por fim um objeto do tipo PubSubClient :
 </ul>
 	
 	const char* mqtt_server = "10.0.0.101";
@@ -165,7 +165,7 @@
 	PubSubClient client(espClient);
 	
 <ul>
-	Após esse setup inicial, executaremos a função publishTopic, que após a conexão com o broker usando suas devidas credenciais, podemos usar o pubSubClient para realizar a comunicação com o broker. Podendo assim, escolher um tópico para se inscrever e publicar uma mensagem em seguida. Código do publishTopic:
+	Após o setup inicial, executaremos a função publishTopic, que após a conexão com o broker usando suas devidas credenciais, podemos usar o pubSubClient para realizar a comunicação com o broker. Podendo assim, escolher um tópico para se inscrever e publicar uma mensagem em seguida. Código do publishTopic:
 </ul>
 
 	  void publishTopic(){
@@ -212,15 +212,17 @@
 	
 <h2>4.4 Interface remota</h2>
 <ul>
-	Para a criação da interface remota foi utilizada a linguagem de marcação Python para exibição do dados que foram enviados pela rasp.
+	Para a criação da interface remota foi utilizada a linguagem de marcação Python para a exibição dos dados que foram enviados pela rasp.
 
-No arquivo main.py é onde se encontra a parte de exibição da interface remota, a mesma é dividida em 2 telas, a tela inicial é composta por 1 botão de conectar e 5 inputs, onde o úsuario deverá informar: O Broker, a porta, o nome do Úsuario, a Senha e por fim seu ID. 
+No arquivo main.py é onde se encontra a parte de exibição da interface remota, a mesma é dividida em 2 telas, a tela inicial é composta por 1 botão de conectar e 5 inputs, onde o usuário deverá informar: O Broker, a porta, o nome do Usuário, a Senha e por fim seu ID. 
+
 </ul>
 	<div align="center">
 	<img src=https://user-images.githubusercontent.com/29680023/208192821-1cb62be9-34fe-490d-8ba6-ac6870268412.jpeg width="800px" />
 	</div>
 <ul>
-Após a conexão ser feita, é exibida a segunda tela, onde por meios de cards o úsuario receberá as informações de cada sensor digital, sensor A0, estado da LED, o tempo de envio de informações, e as últimas 10 medições. Além da visualização o úsuario poderá aumentar ou diminuir o tempo de envio e ligar/desligar a led.
+Após a conexão ser feita, é exibida a segunda tela, onde por meios de cards o usuário receberá as informações de cada sensor digital, sensor A0, estado da LED, o tempo de envio de informações, e as últimas 10 medições. Além da visualização o usuário poderá aumentar ou diminuir o tempo de envio e ligar/desligar a led.
+
 </ul>
 	<div align="center">
 	<img src=https://user-images.githubusercontent.com/29680023/208193240-af1453c0-d8e1-4e62-8d43-e3663c79f85f.jpeg width="800px" />
@@ -232,10 +234,22 @@ Após a conexão ser feita, é exibida a segunda tela, onde por meios de cards o
 <div id="simulacao">
 <h1> Descrição e análise dos testes e simulações realizadas</h1> 
 <ul>
-	Para a elaboração do sistema foi necessário a execução de alguns testes pontuais sendo eles detalhados a seguir:
-
-	O primeiro teste
-	
+Para a elaboração do sistema foi necessário a execução de alguns testes pontuais, como nosso sistema é baseado no conceito de unicidade de dados, usamos o app para testagem final dos valores comparando com os valores exibidos na LCD da Rasp, os testes seguem sendo detalhados a seguir:
+</ul>
+<ul>
+	O primeiro teste foi a verificação da mudança do Sensor A0 tanto no APP, quanto na Rasp. O teste validou a eficácia do produto, garantindo a mudança de valor de forma coesa em ambas aplicações. 
+</ul>
+<ul>
+	O segundo teste teve como foco o bom funcionamento dos sensores D0 até D6, após pressioná-los um a um e comparar com as informações obtidas no APP conseguimos garantir o bom funcionamento deste requisito. 
+</ul>
+<ul>
+	O terceiro teste envolveu a LED, primeiro na rasp acendemos/apagamos a LED com o botão e o mesmo deveria aparecer apagado/aceso no APP, depois deveríamos alterar o estado da LED no app e garantir a sua mudança. O projeto passou no referido teste com êxito, manipulando corretamente a LED. 
+</ul>
+<ul>
+	O quarto teste foi referente ao histórico dos dados recebidos pelo sensor analógico, sendo esse histórico montado nas últimas 10 medições. Para este teste captamos os valores do sensor e os comparamos com todo o histórico que o APP coletou, após resultados idênticos em ambas as amostras garantimos que as medições estavam corretas e responderam bem às expectativas do produto.
+</ul>
+<ul>
+	Por fim, o quinto teste se deu pela configuração de tempo de dados para amostragem, alterando os segundos tanto na Rasp quanto no APP e aguardando em seguida para saber se a nova medição viria no tempo estipulado ou não. Após dezenas de testes com diferentes amostragens, o produto se mostrou sólido, cumprindo com êxito mais esse requisito. 
 </ul>
 </div>
 
@@ -243,11 +257,19 @@ Após a conexão ser feita, é exibida a segunda tela, onde por meios de cards o
 <h1> Materiais utilizados no desenvolvimento</h1> 
 </div>
 
-&nbsp;&nbsp;&nbsp;[ESP8266](https://arduino-esp8266.readthedocs.io/en/latest/)
+&nbsp;&nbsp;&nbsp;[Paho MQTT](https://embarcados.com.br/paho-mqtt-em-c-no-linux-embarcado/)
 
-&nbsp;&nbsp;&nbsp;[Comunicação Serial](https://www.arduino.cc/reference/en/language/functions/communication/serial/)
+&nbsp;&nbsp;&nbsp;[Eclipse Paho](https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php)
 
-&nbsp;&nbsp;&nbsp;[UART - Rasp](https://raspberry-projects.com/pi/programming-in-c/uart-serial-port/using-the-uart)
+&nbsp;&nbsp;&nbsp;[Paho em C](https://github.com/eclipse/paho.mqtt.c)
+
+&nbsp;&nbsp;&nbsp;[PubSubClient](https://pubsubclient.knolleary.net/api)
+
+&nbsp;&nbsp;&nbsp;[KivyMD](https://kivymd.readthedocs.io/en/1.1.1/)
+
+&nbsp;&nbsp;&nbsp;[Timed Action](https://playground.arduino.cc/Code/TimedAction/)
+
+
 
 </div>
 
